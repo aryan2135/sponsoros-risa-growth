@@ -9,10 +9,13 @@ const AUD = JSON.parse(fs.readFileSync(path.join(ROOT, "outputs/audit/audit_snap
 const CAMP = fs.readFileSync(path.join(ROOT, "outputs/audit/campaign_reconciliation.csv"), "utf8").trim().split(/\r?\n/).slice(1).map((l) => l.split(","));
 const A = JSON.parse(fs.readFileSync(path.join(ROOT, "model/assumptions.json"), "utf8"));
 
-const L = (v, d = 1) => `₹${(v / 1e5).toFixed(d)}L`;
+const L = (v, d = 1) => `${v < 0 ? "−" : ""}₹${(Math.abs(v) / 1e5).toFixed(d)}L`;
 const B = F.base, S = F.stretch, bt = B.totals, st = S.totals;
 const wf = Object.fromEntries(B.waterfall.map((w) => [w.step, w]));
 const inc = (k) => wf[k].increment_inr;
+const SENS = Object.fromEntries(fs.readFileSync(path.join(ROOT, "outputs/model/sensitivity_base.csv"), "utf8").trim().split(/\r?\n/).slice(1).map((l) => { const c = l.split(","); return [c[0], { collected: +c[1], delta: +c[2], pct: +c[3] }]; }));
+const D = F.downside, bc = B.costs;
+const mult = (bt.collected_inr / B.bau_collected_inr).toFixed(1);
 
 const NAVY = "0B1F3A", TEAL = "0D9488", INK = "1E293B", MUTED = "64748B", LINE = "CBD5E1", TINT = "F1F5F9", TEALT = "E6F6F4", RED = "BE123C", AMBER = "B45309", GREEN = "047857", WHITE = "FFFFFF";
 const HF = "Cambria", BF = "Calibri";
@@ -63,7 +66,7 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
 // ============================ SLIDE 1 ============================
 {
   const s = pres.addSlide({ masterName: "CONTENT" });
-  header(s, "1 · HOW HIGH CAN WE AIM?", `Target ${L(bt.collected_inr)} of verified cash before the festival (stretch ${L(st.collected_inr)}), 4× what repeating the 2025 playbook would collect`);
+  header(s, "1 · HOW HIGH CAN WE AIM?", `Target ${L(bt.collected_inr)} of verified cash before the festival (stretch ${L(st.collected_inr)}, downside ${L(D.totals.collected_inr)}), ${mult}× what repeating the 2025 playbook would collect`);
   T(s, "Aryan Dongre · IIT Kharagpur", { x: 9.3, y: 0.2, w: 3.53, h: 0.28, fontSize: 11, bold: true, color: NAVY, align: "right", margin: 0 });
 
   // left column
@@ -94,16 +97,16 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
     rows.push([name[r.id], Math.round(r.prospects), r.conversations.toFixed(0), r.proposals.toFixed(1), r.signed.toFixed(1), `₹${(src.avg_deal_inr.base / 1000).toFixed(0)}K`, L(r.collected_inr)]);
   });
   const bold = (t, fill = TEALT) => ({ text: t, options: { bold: true, fill: { color: fill } } });
-  rows.push([bold("Base total"), bold(String(bt.prospects)), bold(bt.conversations.toFixed(0)), bold(bt.proposals.toFixed(0)), bold(bt.signed.toFixed(1)), bold(L(bt.committed_inr / bt.signed, 2)), bold(L(bt.collected_inr))]);
-  rows.push([bold("Stretch total", "E2E8F0"), bold(String(st.prospects), "E2E8F0"), bold(st.conversations.toFixed(0), "E2E8F0"), bold(st.proposals.toFixed(0), "E2E8F0"), bold(st.signed.toFixed(1), "E2E8F0"), bold(L(st.committed_inr / st.signed, 2), "E2E8F0"), bold(L(st.collected_inr), "E2E8F0")]);
+  rows.push([bold("Base total"), bold(String(Math.round(bt.prospects))), bold(bt.conversations.toFixed(0)), bold(bt.proposals.toFixed(0)), bold(bt.signed.toFixed(1)), bold(L(bt.committed_inr / bt.signed, 2)), bold(L(bt.collected_inr))]);
+  rows.push([bold("Stretch total", "E2E8F0"), bold(String(Math.round(st.prospects)), "E2E8F0"), bold(st.conversations.toFixed(0), "E2E8F0"), bold(st.proposals.toFixed(0), "E2E8F0"), bold(st.signed.toFixed(1), "E2E8F0"), bold(L(st.committed_inr / st.signed, 2), "E2E8F0"), bold(L(st.collected_inr), "E2E8F0")]);
   T(s, "Funnel: prospects → conversations → proposals → signed → cash collected", { x: 4.65, y: 1.4, w: 5.0, h: 0.28, fontSize: 11, bold: true, color: NAVY, margin: 0 });
   table(s, rows, { x: 4.65, y: 1.72, w: 5.0, colW: [1.55, 0.55, 0.6, 0.52, 0.55, 0.55, 0.68], fontSize: 10 });
   card(s, 4.65, 4.45, 5.0, 2.53, "Assumptions behind the number (all editable in SponsorOS)");
   T(s, bullets([
     `Warm yield is haircut: 2025 brand→signed was 54.5% (24/44); we plan 26.8% (base) and 36% (stretch). The 96% win rate looks synthetic`,
-    `Cash share 89% (₹20.0L/₹22.4L in 2025); withdrawal 4% (1 of 25 confirmations)`,
-    `Collection ${(bt.collection_rate * 100).toFixed(0)}%: 50% advance within 48h, balance due T-7d, weighted by signing week. Without the desk: 70% [assumption]`,
-    `Capacity: 5 closers × 20 proposals = 100, against 85 needed. With 4 closers capacity binds`,
+    `Cash share 89% (₹20.0L/₹22.4L in 2025); renewals 83% (20 of 24 were cash); withdrawal 4% (1 of 25); 5% de-dup on new referral pools`,
+    `Collection ${(bt.collection_rate * 100).toFixed(0)}%: 50% advance in 48h, balance T-7d, weighted by signing week (2025 signings: 8% early, 72% mid, 20% late). Without the desk: 70% [assumption]`,
+    `Capacity: 5 closers × 20 = ${bt.capacity_proposals} proposals vs ${bt.proposals.toFixed(0)} needed. All-in cost ${L(bc.total_cost_inr, 2)} (budget, closer stipend, 8% finder fees) → net ${L(bc.net_cash_after_costs_inr)}`,
     `Anchor/title tier is excluded from base and enters stretch only at expected value`,
   ], { paraSpaceAfter: 2 }), { x: 4.75, y: 4.8, w: 4.82, h: 2.15, fontSize: 10.5 });
 
@@ -111,7 +114,7 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
   card(s, 9.85, 1.4, 2.98, 1.6, null, NAVY);
   T(s, "Base · verified cash pre-festival", { x: 10.0, y: 1.48, w: 2.7, h: 0.25, fontSize: 10, color: "99F6E4", margin: 0 });
   T(s, L(bt.collected_inr), { x: 10.0, y: 1.7, w: 2.7, h: 0.6, fontFace: HF, fontSize: 34, bold: true, color: WHITE, margin: 0 });
-  T(s, `P10–P90 ${L(B.monte_carlo.p10)}–${L(B.monte_carlo.p90)} (Monte Carlo, 10k runs)\nStretch ${L(st.collected_inr)} · BAU ${L(B.bau_collected_inr)}`, { x: 10.0, y: 2.33, w: 2.75, h: 0.62, fontSize: 10, color: "E2E8F0", margin: 0 });
+  T(s, `P10–P90 ${L(B.monte_carlo.p10)}–${L(B.monte_carlo.p90)} (Monte Carlo, 10k runs)\nStretch ${L(st.collected_inr)} · Downside ${L(D.totals.collected_inr)} · BAU ${L(B.bau_collected_inr)}`, { x: 10.0, y: 2.33, w: 2.75, h: 0.62, fontSize: 10, color: "E2E8F0", margin: 0 });
   T(s, "Cash bridge, base case (₹ lakh)", { x: 9.85, y: 3.12, w: 2.98, h: 0.26, fontSize: 11, bold: true, color: NAVY, margin: 0 });
   const c = bt.committed_inr / 1e5, ik = bt.in_kind_inr / 1e5, wd = bt.withdrawal_loss_inr / 1e5, up = bt.upsell_net_cash_inr / 1e5, un = bt.uncollected_by_festival_inr / 1e5, col = bt.collected_inr / 1e5;
   waterfall(s, 9.9, 3.5, 2.9, 3.45, [
@@ -129,7 +132,7 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
 {
   const s = pres.addSlide({ masterName: "CONTENT" });
   const incTotal = bt.collected_inr - B.bau_collected_inr;
-  header(s, "2 · WHERE WILL WE PLACE OUR BETS?", `Five ranked bets add ${L(incTotal)} over BAU for ₹${(F.budget_inr / 1e5).toFixed(2)}L. Fund cash collection and renewals first; cut cold outreach`);
+  header(s, "2 · WHERE WILL WE PLACE OUR BETS?", `Five ranked bets add ${L(incTotal)} over BAU for ${L(bc.total_cost_inr, 2)} all-in. Fund cash collection and renewals first; cut cold outreach`);
   const I = Object.fromEntries(A.initiatives.map((i) => [i.id, i]));
   const score = (id) => (inc(id) / 1e5) * I[id].confidence / I[id].person_weeks;
   const order = ["I1", "I2", "I3", "I4", "I5"];
@@ -147,7 +150,8 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
     `₹${(I[id].budget_inr / 1000).toFixed(0)}K${id === "I5" ? "\n+8% on receipts" : ""}`, `${I[id].people}\n${I[id].timeline}`, I[id].experiment, I[id].kpis.slice(0, 3).join(" · "), score(id).toFixed(2),
   ]));
   table(s, rows, { x: 0.5, y: 1.4, w: 9.05, colW: [0.3, 2.6, 0.9, 0.72, 1.33, 1.5, 1.25, 0.45], fontSize: 9 });
-  T(s, "*Score = incremental pre-festival cash (₹L) × confidence ÷ person-weeks. Increments come from an ordered waterfall (acquisition → value → collection), so the five sum exactly to the plan with no double counting.", { x: 0.5, y: 5.72, w: 9.05, h: 0.36, fontSize: 9.5, color: MUTED, italic: true, margin: 0 });
+  const tie = Math.abs(score("I1") - score("I2")) < 0.05 ? ` I1 and I2 score within ${Math.abs(score("I1") - score("I2")).toFixed(2)}: ties break on time-to-cash (I1 from week 1) and dependency (I1 multiplies every deal's cash).` : "";
+  T(s, `*Score = incremental pre-festival cash (₹L) × confidence ÷ person-weeks.${tie} Increments come from an ordered waterfall, so the five sum exactly to the plan with no double counting.`, { x: 0.5, y: 5.72, w: 9.05, h: 0.36, fontSize: 9.5, color: MUTED, italic: true, margin: 0 });
 
   T(s, "Bridge: BAU → base plan (₹ lakh, verified cash)", { x: 9.75, y: 1.4, w: 3.1, h: 0.26, fontSize: 11, bold: true, color: NAVY, margin: 0 });
   let run = 0; const steps = [];
@@ -158,12 +162,12 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
   }
   steps.push({ name: "Base\nplan", from: 0, to: run, kind: "total", label_value: run.toFixed(1) });
   waterfall(s, 9.75, 1.78, 3.1, 3.4, steps);
-  T(s, `≈ ₹${(incTotal / F.budget_inr).toFixed(0)} of incremental cash per ₹1 of budget. Closer time, not money, is the binding constraint`, { x: 9.75, y: 5.25, w: 3.1, h: 0.5, fontSize: 10, color: INK, bold: true, margin: 0 });
+  T(s, `≈ ₹${(incTotal / bc.total_cost_inr).toFixed(0)} of incremental cash per ₹1 all-in (₹${(F.budget_inr / 1000).toFixed(0)}K budget + ₹${(bc.closer_stipend_inr / 1000).toFixed(0)}K stipend + ₹${(bc.finder_fees_inr / 1000).toFixed(0)}K finder fees). Closer time is the binding constraint`, { x: 9.75, y: 5.25, w: 3.1, h: 0.5, fontSize: 10, color: INK, bold: true, margin: 0 });
 
   const boxes = [
-    ["Double down", TEALT, ["I1: highest score, ₹15K cost, and it multiplies every other deal's cash", "I2: fastest warm cash. Renewing sponsors become referrers for I4", "Move closer hours from cold to warm the day a warm signal fires"]],
+    ["Double down", TEALT, ["I1: ties I2 for the top score at only ₹15K, and it multiplies every other deal's cash", "I2: fastest warm cash. Renewing sponsors become referrers for I4", "Move closer hours from cold to warm the day a warm signal fires"]],
     ["Deprioritise / reject", "FDECEC", ["Scaling cold email, LinkedIn and revival: 148 brands, 0 confirmed, 7 opt-outs. Keep only a 40-brand ABM test", "Betting on one title sponsor: no 2025 deal topped ₹2L. Stretch only, at expected value", "Chasing the stale ₹14.4L cold pipeline: one close-or-disqualify touch", "Paid ads for leads: no spend data, buyers are few"]],
-    ["Dependencies & risks", "FEF3C7", ["Renewals fail entirely → −26% (−₹10L): the biggest single sensitivity", "Win rates ×0.8 → −₹7.6L; deal size −20% → −₹7.1L", "4 closers instead of 5 → capacity binds; I4 needs I2 referrers first"]],
+    ["Dependencies & risks", "FEF3C7", [`Renewals fail entirely → ${(SENS["Renewals fail entirely"].pct * 100).toFixed(0)}% (${L(SENS["Renewals fail entirely"].delta)}): the biggest single sensitivity`, `Win rates ×0.8 → ${L(SENS["Win rates x0.8 (all sources)"].delta)}; deal size −20% → ${L(SENS["Avg deal size -20%"].delta)}`, `Downside (all stresses together) ${L(D.totals.collected_inr)}. I4 needs I2 referrers first`]],
   ];
   boxes.forEach(([t, fill, items], i) => {
     const x = 0.5 + i * 4.15;
@@ -192,7 +196,8 @@ function waterfall(s, x, y, w, h, steps, opts = {}) {
   table(s, rows, { x: 0.5, y: 1.4, w: 9.0, colW: [1.35, 1.6, 1.55, 1.4, 1.6, 1.5], fontSize: 9 });
 
   T(s, "Plan-level cash gates (base case)", { x: 0.5, y: 5.2, w: 9, h: 0.26, fontSize: 11, bold: true, color: NAVY, margin: 0 });
-  const gates = [["T-12w", "≥12 renewal proposals out; desk live"], ["T-8w", "≥₹18L cash-type signed; 100% invoiced ≤48h"], ["T-4w", "≥₹15L verified received; ≤₹2L overdue"], ["T-1w", "≥₹30L received; every late signer on 100% advance"]];
+  const r5 = (v) => `₹${Math.round(v / 1e5)}L`;
+  const gates = [["T-12w", "≥12 renewal proposals out; desk live"], ["T-8w", `≥${r5(bt.cash_type_inr * 0.45)} cash-type signed; 100% invoiced ≤48h`], ["T-4w", `≥${r5(bt.collected_inr * 0.4)} verified received; ≤₹2L overdue`], ["T-1w", `≥${r5(bt.collected_inr * 0.8)} received; every late signer on 100% advance`]];
   gates.forEach(([w, t], i) => {
     const x = 0.5 + i * 2.27;
     s.addShape(pres.shapes.CHEVRON, { x, y: 5.52, w: 2.2, h: 0.62, fill: { color: i === 3 ? NAVY : TEAL }, line: { color: i === 3 ? NAVY : TEAL } });

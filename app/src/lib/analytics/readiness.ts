@@ -14,7 +14,7 @@ export type Action =
 
 export interface Factor { label: string; points: number }
 export interface ReadinessItem {
-  opportunity_id: string; opportunity_name: string; brand_name: string; owner_name: string | null; stage: string; track: "collection" | "closing";
+  opportunity_id: string; opportunity_name: string; brand_name: string; owner_id: string | null; owner_name: string | null; stage: string; track: "collection" | "closing";
   value_inr: number; score: number; band: "high" | "medium" | "low"; action: Action; urgency: number; factors: Factor[]; why: string; missing: string[];
 }
 
@@ -62,7 +62,7 @@ function scoreClosing(o: OppView, snap: Snapshot, staleDays: number): ReadinessI
   else if (score < 25) action = "Deprioritise";
   const urgency = action === "Deprioritise" ? 0 : (score / 100) * (o.proposed_value_inr / 1000) * (o.stage === "negotiating" ? 1.5 : 1);
   return {
-    opportunity_id: o.opportunity_id, opportunity_name: o.opportunity_name, brand_name: o.brand_name, owner_name: o.owner_name, stage: o.stage, track: "closing",
+    opportunity_id: o.opportunity_id, opportunity_name: o.opportunity_name, brand_name: o.brand_name, owner_id: o.owner_id, owner_name: o.owner_name, stage: o.stage, track: "closing",
     value_inr: o.proposed_value_inr, score, band: band(score), action, urgency, factors: f, missing,
     why: f.map((x) => `${x.label} (${x.points >= 0 ? "+" : ""}${x.points})`).join("; "),
   };
@@ -84,7 +84,7 @@ function scoreCollection(o: OppView, l: CashLine, snap: Snapshot): ReadinessItem
   }
   const score = action === "Collected — no action" ? 100 : Math.max(0, Math.min(100, f.reduce((a, b) => a + b.points, 0)));
   return {
-    opportunity_id: o.opportunity_id, opportunity_name: o.opportunity_name, brand_name: o.brand_name, owner_name: o.owner_name, stage: o.stage, track: "collection",
+    opportunity_id: o.opportunity_id, opportunity_name: o.opportunity_name, brand_name: o.brand_name, owner_id: o.owner_id, owner_name: o.owner_name, stage: o.stage, track: "collection",
     value_inr: l.outstanding_inr, score, band: band(score), action, urgency: urg * (l.outstanding_inr / 1000), factors: f, missing: l.milestones.length ? [] : ["payment schedule", "invoice"],
     why: f.map((x) => `${x.label} (${x.points >= 0 ? "+" : ""}${x.points})`).join("; "),
   };

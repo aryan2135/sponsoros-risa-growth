@@ -1,11 +1,14 @@
 {
   "meta": {
     "name": "CampusFest next-edition sponsorship cash model",
-    "version": "1.0.0",
+    "version": "1.1.0",
     "objective": "Expected sponsorship CASH collected before the festival opens (INR). In-kind value never enters cash.",
     "calibration_snapshot": "CampusFest 2025, pre-festival cutoff 2025-04-11 23:59:59 IST",
     "levels": "bau = repeat the 2025 playbook; base = realistic plan; stretch = ambitious plan",
-    "label_legend": "[SOURCE] dataset fact, [CALCULATED] derived from dataset, [ASSUMPTION] planning assumption"
+    "label_legend": "[SOURCE] dataset fact, [CALCULATED] derived from dataset, [ASSUMPTION] planning assumption",
+    "changelog": [
+      "1.1.0 (pre-deployment review): base signing-phase mix 0.45/0.40/0.15 -> 0.25/0.55/0.20 (2025 confirmations were 2/18/5 early/mid/late with a T-11.7w start); renewal cash share 0.83 (20 of 24 renewing sponsors were cash); 5% prospect de-duplication on new referral/inbound pools; explicit finder-fee and closer-stipend costs; downside case."
+    ]
   },
   "global": {
     "cash_share_of_committed_value": {
@@ -42,9 +45,9 @@
       "bau_basis": "2025 had no invoice, milestone or receipt records at all. Without a collection process we assume 70% of net cash-type commitments arrive before the festival.",
       "signing_phase_mix": {
         "base": [
-          0.45,
-          0.4,
-          0.15
+          0.25,
+          0.55,
+          0.2
         ],
         "stretch": [
           0.55,
@@ -70,7 +73,7 @@
         "late: signed T-3 to T-0 weeks"
       ],
       "label": "[ASSUMPTION]",
-      "basis": "With the Cash Collection Desk: 50% advance invoiced within 48h of signing, balance due T-7 days. 2025 confirmations were spread over 8 weeks (Feb 10 - Apr 6), so most signings can land early/mid."
+      "basis": "Cash Collection Desk terms: 50% advance invoiced within 48h of signing, balance due T-7. [CALCULATED] 2025 confirmation timing: 2 early (>=T-9w), 18 mid (T-8..T-4), 5 late (T-3..T-0) of 25, with outreach starting only at T-11.7w. Base assumes the plan's T-16 start moves part of mid into early: 25/55/20 [ASSUMPTION]. Applying base phase probabilities to the raw 2025 mix gives 81%."
     },
     "upsell": {
       "attach_rate": {
@@ -85,6 +88,30 @@
       },
       "label": "[ASSUMPTION]",
       "basis": "Add-on menu (sampling stall, stage branding, digital pack) sold to signed cash sponsors. Applied to expected signed cash-type deals."
+    },
+    "prospect_dedup_factor": {
+      "bau": 1.0,
+      "base": 0.95,
+      "stretch": 0.95,
+      "label": "[CALCULATED]/[ASSUMPTION]",
+      "basis": "2025: 0 of 44 warm brands appeared in two warm campaigns, 5 of 44 were also touched by cold outreach. A 5% haircut on new referral/inbound prospect pools covers cross-channel duplicates; the CRM attributes each brand to one originating source."
+    },
+    "costs": {
+      "finder_fee_rate": {
+        "value": 0.08,
+        "applies_to": [
+          "creator_referral"
+        ],
+        "label": "[ASSUMPTION]",
+        "basis": "I5 pays creators 8% of cash RECEIVED from brands they refer: a variable cost deducted from net, never from gross cash collected."
+      },
+      "closer_stipend_inr": {
+        "bau": 0,
+        "base": 40000,
+        "stretch": 80000,
+        "label": "[ASSUMPTION]",
+        "basis": "Incremental closers (+1 base, +2 stretch) at an Rs 10,000/month student stipend for 4 months. The core team is unpaid student volunteers (Rs 0)."
+      }
     }
   },
   "sources": [
@@ -117,7 +144,13 @@
         "base": 125000,
         "stretch": 135000
       },
-      "basis": "[SOURCE] 24 brands confirmed in 2025 (20 cash, 4 in-kind). Rates are [ASSUMPTION]: no renewal history exists. Deal uplift from a tier ladder [ASSUMPTION]; 2025 avg confirmed cash deal = 100,000 [CALCULATED]."
+      "basis": "[SOURCE] 24 brands confirmed in 2025 (20 cash, 4 in-kind). Rates are [ASSUMPTION]: no renewal history exists. Deal uplift from a tier ladder [ASSUMPTION]; 2025 avg confirmed cash deal = 100,000 [CALCULATED]. [CALCULATED] cash share 0.83 = 20 cash of 24 renewing sponsors (4 were in-kind); stretch assumes a little in-kind-to-cash conversion.",
+      "cash_share": {
+        "bau": 0.83,
+        "base": 0.83,
+        "stretch": 0.85
+      },
+      "dedup": false
     },
     {
       "id": "qualified_recovery",
@@ -148,7 +181,8 @@
         "base": 95000,
         "stretch": 100000
       },
-      "basis": "[CALCULATED] 18 brands whose latest status was 'qualified' at the cutoff but had no opportunity. 13 of 18 came from warm/inbound sources. Rates [ASSUMPTION], haircut vs warm history."
+      "basis": "[CALCULATED] 18 brands whose latest status was 'qualified' at the cutoff but had no opportunity. 13 of 18 came from warm/inbound sources. Rates [ASSUMPTION], haircut vs warm history.",
+      "dedup": false
     },
     {
       "id": "inbound",
@@ -179,7 +213,8 @@
         "base": 105000,
         "stretch": 115000
       },
-      "basis": "[CALCULATED] 2025 Partner Interest Form: 17 brands, 13 met, 7 proposals, 7 confirmed; avg cash deal 105,833. Rates are warm-history haircuts [ASSUMPTION]."
+      "basis": "[CALCULATED] 2025 Partner Interest Form: 17 brands, 13 met, 7 proposals, 7 confirmed; avg cash deal 105,833. Rates are warm-history haircuts [ASSUMPTION].",
+      "dedup": true
     },
     {
       "id": "alumni_referral",
@@ -210,7 +245,8 @@
         "base": 115000,
         "stretch": 125000
       },
-      "basis": "[CALCULATED] 2025 Warm Partner Introductions: 8 brands, 8 met, 9 proposals, 8 confirmed (96% of proposals); avg cash deal 106,667. Forward rates halve the historical brand-to-signed yield (54.5% -> 26.8% base) [ASSUMPTION]."
+      "basis": "[CALCULATED] 2025 Warm Partner Introductions: 8 brands, 8 met, 9 proposals, 8 confirmed (96% of proposals); avg cash deal 106,667. Forward rates halve the historical brand-to-signed yield (54.5% -> 26.8% base) [ASSUMPTION].",
+      "dedup": true
     },
     {
       "id": "creator_referral",
@@ -241,7 +277,8 @@
         "base": 95000,
         "stretch": 100000
       },
-      "basis": "[CALCULATED] 2025 Creator Network Referrals: 19 brands, 15 met, 9 proposals, 9 confirmed; avg cash deal 90,625. Forward rates are haircuts [ASSUMPTION]."
+      "basis": "[CALCULATED] 2025 Creator Network Referrals: 19 brands, 15 met, 9 proposals, 9 confirmed; avg cash deal 90,625. Forward rates are haircuts [ASSUMPTION].",
+      "dedup": true
     },
     {
       "id": "cold_outbound",
@@ -272,7 +309,8 @@
         "base": 90000,
         "stretch": 100000
       },
-      "basis": "[CALCULATED] 2025 cold channels: 148 brands, 24 met (16%), 21 proposals, 1 confirmation which later withdrew; 0 confirmed at cutoff. A non-zero win rate is a generous [ASSUMPTION]. Plan cuts volume to a 40-brand, meeting-gated ABM test."
+      "basis": "[CALCULATED] 2025 cold channels: 148 brands, 24 met (16%), 21 proposals, 1 confirmation which later withdrew; 0 confirmed at cutoff. A non-zero win rate is a generous [ASSUMPTION]. Plan cuts volume to a 40-brand, meeting-gated ABM test.",
+      "dedup": false
     },
     {
       "id": "anchor_tier",
@@ -303,7 +341,8 @@
         "base": 800000,
         "stretch": 800000
       },
-      "basis": "[ASSUMPTION] No 2025 deal exceeded 200,000. Excluded from base so the plan never depends on a title sponsor; stretch carries only its expected value (0.5 deals) across 8 prospects."
+      "basis": "[ASSUMPTION] No 2025 deal exceeded 200,000. Excluded from base so the plan never depends on a title sponsor; stretch carries only its expected value (0.5 deals) across 8 prospects.",
+      "dedup": false
     }
   ],
   "initiatives": [
@@ -456,5 +495,16 @@
   ],
   "targets": {
     "label": "[CALCULATED] from this model; see outputs/model/forecast_summary.json"
+  },
+  "downside": {
+    "level": "base",
+    "label": "[SIMULATION]",
+    "overrides": {
+      "win_multiplier": 0.8,
+      "collection_prob_delta": -0.1,
+      "deal_multiplier": 0.9,
+      "warm_prospects_multiplier": 0.8
+    },
+    "basis": "Simultaneous stress on the base plan: win rates x0.8, collection -10pp, deal size -10%, new warm volume -20%."
   }
 }

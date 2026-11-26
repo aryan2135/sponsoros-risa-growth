@@ -2,56 +2,63 @@
   "base": {
     "totals": {
       "capacity_proposals": 100,
-      "proposal_demand": 85.26,
-      "proposals": 85.26,
+      "proposal_demand": 82.62749999999998,
+      "proposals": 82.62749999999998,
       "capacity_binding": false,
-      "prospects": 190.0,
-      "conversations": 123.2,
-      "signed": 43.692,
-      "committed_inr": 4768147.5,
-      "cash_type_inr": 4243651.275,
-      "in_kind_inr": 524496.225,
-      "withdrawal_loss_inr": 169746.05100000015,
-      "net_cash_inr": 4073905.224,
-      "upsell_net_cash_inr": 298643.55840000004,
-      "collection_rate": 0.8695,
-      "collected_inr": 3801931.1662968,
-      "uncollected_by_festival_inr": 570617.6161031998
+      "prospects": 184.6,
+      "conversations": 119.15,
+      "signed": 42.244125000000004,
+      "committed_inr": 4614780.0,
+      "cash_type_inr": 4031419.1999999997,
+      "in_kind_inr": 583360.7999999999,
+      "withdrawal_loss_inr": 161256.76800000033,
+      "net_cash_inr": 3870162.4319999996,
+      "upsell_net_cash_inr": 284093.8848,
+      "collection_rate": 0.8415,
+      "collected_inr": 3495806.6905871998,
+      "uncollected_by_festival_inr": 658449.6262127999
     },
     "monte_carlo": {
-      "p10": 2780725.0,
-      "p50": 3759750.0,
-      "p90": 4819050.0,
-      "mean": 3786346.8,
-      "signed_p10": 34.0,
-      "signed_p90": 54.0,
-      "p_reach_expected": 0.4776,
-      "p_reach_base_target": 0.4776,
-      "p_reach_2025_cash_type": 0.9941
+      "p10": 2572000.0,
+      "p50": 3491750.0,
+      "p90": 4476800.0,
+      "mean": 3512457.575,
+      "signed_p10": 33.0,
+      "signed_p90": 52.0,
+      "p_reach_expected": 0.4978,
+      "p_reach_base_target": 0.4978,
+      "p_reach_2025_cash_type": 0.9846
     },
-    "bau_collected_inr": 940102.36488,
+    "bau_collected_inr": 928490.2048800001,
+    "costs": {
+      "budget_inr": 215000,
+      "closer_stipend_inr": 40000,
+      "finder_fees_inr": 52816.73258862001,
+      "total_cost_inr": 307816.73258862004,
+      "net_cash_after_costs_inr": 3187989.95799858
+    },
     "by_source": [
       {
         "id": "renewal",
         "name": "2025 sponsor renewals",
         "initiative": "I2",
-        "prospects": 24,
+        "prospects": 24.0,
         "conversations": 21.6,
         "proposal_demand": 18.36,
         "proposals": 18.36,
         "signed": 10.098,
         "committed_inr": 1262250.0,
-        "cash_type_inr": 1123402.5,
-        "in_kind_inr": 138847.5,
-        "net_cash_inr": 1078466.4,
-        "upsell_net_cash_inr": 69021.8496,
-        "collected_inr": 997741.0330272
+        "cash_type_inr": 1047667.5,
+        "in_kind_inr": 214582.5,
+        "net_cash_inr": 1005760.7999999999,
+        "upsell_net_cash_inr": 64368.6912,
+        "collected_inr": 900513.9668448
       },
       {
         "id": "qualified_recovery",
         "name": "Qualified-but-unpitched 2025 brands",
         "initiative": "I3",
-        "prospects": 18,
+        "prospects": 18.0,
         "conversations": 12.6,
         "proposal_demand": 9.45,
         "proposals": 9.45,
@@ -61,61 +68,61 @@
         "in_kind_inr": 44438.625,
         "net_cash_inr": 345166.9199999999,
         "upsell_net_cash_inr": 29066.688,
-        "collected_inr": 325396.122156
+        "collected_inr": 314917.58113199996
       },
       {
         "id": "inbound",
         "name": "Inbound partner page / form",
         "initiative": "I3",
-        "prospects": 28,
-        "conversations": 21.0,
-        "proposal_demand": 13.65,
-        "proposals": 13.65,
-        "signed": 7.507500000000001,
-        "committed_inr": 788287.5000000001,
-        "cash_type_inr": 701575.8750000001,
-        "in_kind_inr": 86711.625,
-        "net_cash_inr": 673512.8400000001,
-        "upsell_net_cash_inr": 51315.264,
-        "collected_inr": 630238.0364280001
+        "prospects": 26.599999999999998,
+        "conversations": 19.95,
+        "proposal_demand": 12.9675,
+        "proposals": 12.9675,
+        "signed": 7.132125,
+        "committed_inr": 748873.125,
+        "cash_type_inr": 666497.08125,
+        "in_kind_inr": 82376.04374999995,
+        "net_cash_inr": 639837.198,
+        "upsell_net_cash_inr": 48749.50080000001,
+        "collected_inr": 579445.7070402
       },
       {
         "id": "alumni_referral",
         "name": "Alumni & sponsor referral engine",
         "initiative": "I4",
-        "prospects": 45,
-        "conversations": 33.75,
-        "proposal_demand": 21.9375,
-        "proposals": 21.9375,
-        "signed": 12.065625,
-        "committed_inr": 1387546.875,
-        "cash_type_inr": 1234916.71875,
-        "in_kind_inr": 152630.15625,
-        "net_cash_inr": 1185520.05,
-        "upsell_net_cash_inr": 82470.96,
-        "collected_inr": 1102518.183195
+        "prospects": 42.75,
+        "conversations": 32.0625,
+        "proposal_demand": 20.840625,
+        "proposals": 20.840625,
+        "signed": 11.46234375,
+        "committed_inr": 1318169.53125,
+        "cash_type_inr": 1173170.8828125,
+        "in_kind_inr": 144998.6484375,
+        "net_cash_inr": 1126244.0474999999,
+        "upsell_net_cash_inr": 78347.41200000001,
+        "collected_inr": 1013663.7131692499
       },
       {
         "id": "creator_referral",
         "name": "Creator & community referral network",
         "initiative": "I5",
-        "prospects": 35,
-        "conversations": 26.25,
-        "proposal_demand": 17.0625,
-        "proposals": 17.0625,
-        "signed": 9.384375,
-        "committed_inr": 891515.625,
-        "cash_type_inr": 793448.90625,
-        "in_kind_inr": 98066.71875,
-        "net_cash_inr": 761710.95,
-        "upsell_net_cash_inr": 64144.079999999994,
-        "collected_inr": 718080.948585
+        "prospects": 33.25,
+        "conversations": 24.9375,
+        "proposal_demand": 16.209375,
+        "proposals": 16.209375,
+        "signed": 8.91515625,
+        "committed_inr": 846939.8437500001,
+        "cash_type_inr": 753776.4609375001,
+        "in_kind_inr": 93163.3828125,
+        "net_cash_inr": 723625.4025000001,
+        "upsell_net_cash_inr": 60936.876000000004,
+        "collected_inr": 660209.1573577501
       },
       {
         "id": "cold_outbound",
         "name": "Cold outbound (email / LinkedIn / revival)",
         "initiative": "DEPRIORITISE",
-        "prospects": 40,
+        "prospects": 40.0,
         "conversations": 8.0,
         "proposal_demand": 4.8,
         "proposals": 4.8,
@@ -125,13 +132,13 @@
         "in_kind_inr": 3801.5999999999985,
         "net_cash_inr": 29528.064,
         "upsell_net_cash_inr": 2624.7168,
-        "collected_inr": 27956.842905600002
+        "collected_inr": 27056.5650432
       },
       {
         "id": "anchor_tier",
         "name": "Anchor / title-tier prospects (stretch only)",
         "initiative": "I2",
-        "prospects": 0,
+        "prospects": 0.0,
         "conversations": 0.0,
         "proposal_demand": 0.0,
         "proposals": 0.0,
@@ -148,107 +155,114 @@
       {
         "step": "BAU",
         "label": "Repeat 2025 playbook (BAU)",
-        "collected_inr": 940102.36488,
+        "collected_inr": 928490.2048800001,
         "signed": 16.400400000000005,
-        "increment_inr": 940102.36488
+        "increment_inr": 928490.2048800001
       },
       {
         "step": "PLAN",
         "label": "Cut cold volume to ABM test + plan capacity",
-        "collected_inr": 922533.1668,
-        "signed": 16.074,
-        "increment_inr": -17569.198080000002
+        "collected_inr": 877165.1847,
+        "signed": 15.484125000000002,
+        "increment_inr": -51325.02018000011
       },
       {
         "step": "I2",
         "label": "I2 Renewal, Tiering & Upsell",
-        "collected_inr": 1616656.4416800002,
-        "signed": 23.292,
-        "increment_inr": 694123.2748800002
+        "collected_inr": 1525927.1491800002,
+        "signed": 22.702125000000002,
+        "increment_inr": 648761.9644800002
       },
       {
         "step": "I3",
         "label": "I3 Qualified-Lead Recovery + Inbound Page",
-        "collected_inr": 2032233.8248800002,
-        "signed": 29.481375,
-        "increment_inr": 415577.38320000004
+        "collected_inr": 1930856.6151,
+        "signed": 28.74403125,
+        "increment_inr": 404929.4659199999
       },
       {
         "step": "I4",
         "label": "I4 Alumni & Sponsor Referral Engine",
-        "collected_inr": 2781276.31908,
-        "signed": 39.402,
-        "increment_inr": 749042.4941999996
+        "collected_inr": 2642446.98459,
+        "signed": 38.168625000000006,
+        "increment_inr": 711590.36949
       },
       {
         "step": "I5",
         "label": "I5 Creator & Community Referrals",
-        "collected_inr": 3060784.1476799995,
-        "signed": 43.692,
-        "increment_inr": 279507.82859999966
+        "collected_inr": 2907979.4217600003,
+        "signed": 42.244125000000004,
+        "increment_inr": 265532.4371700003
       },
       {
         "step": "I1",
         "label": "I1 Cash Collection Desk",
-        "collected_inr": 3801931.1662968,
-        "signed": 43.692,
-        "increment_inr": 741147.0186168007
+        "collected_inr": 3495806.6905871998,
+        "signed": 42.244125000000004,
+        "increment_inr": 587827.2688271995
       }
     ]
   },
   "stretch": {
     "totals": {
       "capacity_proposals": 120,
-      "proposal_demand": 119.0,
-      "proposals": 119.0,
+      "proposal_demand": 115.05199999999999,
+      "proposals": 115.05199999999999,
       "capacity_binding": false,
-      "prospects": 231.0,
-      "conversations": 164.0,
-      "signed": 66.54799999999999,
-      "committed_inr": 8121160.0,
-      "cash_type_inr": 7309044.0,
-      "in_kind_inr": 812116.0,
-      "withdrawal_loss_inr": 219271.32000000007,
-      "net_cash_inr": 7089772.68,
-      "upsell_net_cash_inr": 871446.0599999999,
+      "prospects": 223.95,
+      "conversations": 158.36,
+      "signed": 64.17920000000001,
+      "committed_inr": 7850008.0,
+      "cash_type_inr": 6981901.199999999,
+      "in_kind_inr": 868106.8,
+      "withdrawal_loss_inr": 209457.03600000008,
+      "net_cash_inr": 6772444.164,
+      "upsell_net_cash_inr": 831469.6439999999,
       "collection_rate": 0.9255,
-      "collected_inr": 7368107.943870001,
-      "uncollected_by_festival_inr": 593110.7961299988
+      "collected_inr": 7037422.229304001,
+      "uncollected_by_festival_inr": 566491.5786959995
     },
     "monte_carlo": {
-      "p10": 5677725.0,
-      "p50": 7220125.0,
-      "p90": 8895150.0,
-      "mean": 7262017.7,
-      "signed_p10": 53.0,
-      "signed_p90": 77.0,
-      "p_reach_expected": 0.4552,
-      "p_reach_base_target": 0.9991,
+      "p10": 5428400.0,
+      "p50": 6936750.0,
+      "p90": 8609750.0,
+      "mean": 6992162.025,
+      "signed_p10": 52.0,
+      "signed_p90": 75.0,
+      "p_reach_expected": 0.4692,
+      "p_reach_base_target": 0.9993,
       "p_reach_2025_cash_type": 1.0
     },
-    "bau_collected_inr": 940102.36488,
+    "bau_collected_inr": 928490.2048800001,
+    "costs": {
+      "budget_inr": 215000,
+      "closer_stipend_inr": 80000,
+      "finder_fees_inr": 106771.1426712,
+      "total_cost_inr": 401771.1426712,
+      "net_cash_after_costs_inr": 6635651.0866328
+    },
     "by_source": [
       {
         "id": "renewal",
         "name": "2025 sponsor renewals",
         "initiative": "I2",
-        "prospects": 24,
+        "prospects": 24.0,
         "conversations": 22.799999999999997,
         "proposal_demand": 20.52,
         "proposals": 20.52,
         "signed": 12.312,
         "committed_inr": 1662120.0,
-        "cash_type_inr": 1495908.0,
-        "in_kind_inr": 166212.0,
-        "net_cash_inr": 1451030.76,
-        "upsell_net_cash_inr": 161225.63999999998,
-        "collected_inr": 1492143.2981999998
+        "cash_type_inr": 1412802.0,
+        "in_kind_inr": 249318.0,
+        "net_cash_inr": 1370417.94,
+        "upsell_net_cash_inr": 152268.66,
+        "collected_inr": 1409246.4482999998
       },
       {
         "id": "qualified_recovery",
         "name": "Qualified-but-unpitched 2025 brands",
         "initiative": "I3",
-        "prospects": 18,
+        "prospects": 18.0,
         "conversations": 14.4,
         "proposal_demand": 11.520000000000001,
         "proposals": 11.520000000000001,
@@ -264,55 +278,55 @@
         "id": "inbound",
         "name": "Inbound partner page / form",
         "initiative": "I3",
-        "prospects": 36,
-        "conversations": 28.8,
-        "proposal_demand": 20.16,
-        "proposals": 20.16,
-        "signed": 12.096,
-        "committed_inr": 1391040.0,
-        "cash_type_inr": 1251936.0,
-        "in_kind_inr": 139104.0,
-        "net_cash_inr": 1214377.92,
-        "upsell_net_cash_inr": 158397.12,
-        "collected_inr": 1270503.2995200001
+        "prospects": 34.199999999999996,
+        "conversations": 27.36,
+        "proposal_demand": 19.151999999999997,
+        "proposals": 19.151999999999997,
+        "signed": 11.491199999999997,
+        "committed_inr": 1321487.9999999998,
+        "cash_type_inr": 1189339.1999999997,
+        "in_kind_inr": 132148.80000000005,
+        "net_cash_inr": 1153659.0239999997,
+        "upsell_net_cash_inr": 150477.26399999994,
+        "collected_inr": 1206978.1345439998
       },
       {
         "id": "alumni_referral",
         "name": "Alumni & sponsor referral engine",
         "initiative": "I4",
-        "prospects": 60,
-        "conversations": 48.0,
-        "proposal_demand": 33.599999999999994,
-        "proposals": 33.599999999999994,
-        "signed": 20.159999999999997,
-        "committed_inr": 2519999.9999999995,
-        "cash_type_inr": 2267999.9999999995,
-        "in_kind_inr": 252000.0,
-        "net_cash_inr": 2199959.9999999995,
-        "upsell_net_cash_inr": 263995.19999999995,
-        "collected_inr": 2280390.5375999995
+        "prospects": 57.0,
+        "conversations": 45.6,
+        "proposal_demand": 31.919999999999998,
+        "proposals": 31.919999999999998,
+        "signed": 19.151999999999997,
+        "committed_inr": 2393999.9999999995,
+        "cash_type_inr": 2154599.9999999995,
+        "in_kind_inr": 239400.0,
+        "net_cash_inr": 2089961.9999999995,
+        "upsell_net_cash_inr": 250795.43999999997,
+        "collected_inr": 2166371.0107199997
       },
       {
         "id": "creator_referral",
         "name": "Creator & community referral network",
         "initiative": "I5",
-        "prospects": 45,
-        "conversations": 36.0,
-        "proposal_demand": 25.2,
-        "proposals": 25.2,
-        "signed": 15.12,
-        "committed_inr": 1512000.0,
-        "cash_type_inr": 1360800.0,
-        "in_kind_inr": 151200.0,
-        "net_cash_inr": 1319976.0,
-        "upsell_net_cash_inr": 197996.4,
-        "collected_inr": 1404883.4562
+        "prospects": 42.75,
+        "conversations": 34.2,
+        "proposal_demand": 23.94,
+        "proposals": 23.94,
+        "signed": 14.364,
+        "committed_inr": 1436400.0,
+        "cash_type_inr": 1292760.0,
+        "in_kind_inr": 143640.0,
+        "net_cash_inr": 1253977.2,
+        "upsell_net_cash_inr": 188096.58,
+        "collected_inr": 1334639.28339
       },
       {
         "id": "cold_outbound",
         "name": "Cold outbound (email / LinkedIn / revival)",
         "initiative": "DEPRIORITISE",
-        "prospects": 40,
+        "prospects": 40.0,
         "conversations": 10.0,
         "proposal_demand": 6.0,
         "proposals": 6.0,
@@ -328,7 +342,7 @@
         "id": "anchor_tier",
         "name": "Anchor / title-tier prospects (stretch only)",
         "initiative": "I2",
-        "prospects": 8,
+        "prospects": 8.0,
         "conversations": 4.0,
         "proposal_demand": 2.0,
         "proposals": 2.0,
@@ -345,53 +359,106 @@
       {
         "step": "BAU",
         "label": "Repeat 2025 playbook (BAU)",
-        "collected_inr": 940102.36488,
+        "collected_inr": 928490.2048800001,
         "signed": 16.400400000000005,
-        "increment_inr": 940102.36488
+        "increment_inr": 928490.2048800001
       },
       {
         "step": "PLAN",
         "label": "Cut cold volume to ABM test + plan capacity",
-        "collected_inr": 958162.7868750002,
-        "signed": 16.290000000000003,
-        "increment_inr": 18060.421995000215
+        "collected_inr": 909983.47190625,
+        "signed": 15.700125000000002,
+        "increment_inr": -18506.7329737501
       },
       {
         "step": "I2",
         "label": "I2 Renewal, Tiering & Upsell",
-        "collected_inr": 2282691.4818749996,
-        "signed": 26.222,
-        "increment_inr": 1324528.6949999994
+        "collected_inr": 2180094.85771875,
+        "signed": 25.632125000000002,
+        "increment_inr": 1270111.3858125
       },
       {
         "step": "I3",
         "label": "I3 Qualified-Lead Recovery + Inbound Page",
-        "collected_inr": 3263130.0095625003,
-        "signed": 38.507375,
-        "increment_inr": 980438.5276875007
+        "collected_inr": 3128502.7125843745,
+        "signed": 37.540606249999996,
+        "increment_inr": 948407.8548656246
       },
       {
         "step": "I4",
         "label": "I4 Alumni & Sponsor Referral Engine",
-        "collected_inr": 4837155.5570625,
-        "signed": 56.522375,
-        "increment_inr": 1574025.5474999999
+        "collected_inr": 4623826.982709375,
+        "signed": 54.65485625,
+        "increment_inr": 1495324.2701250007
       },
       {
         "step": "I5",
         "label": "I5 Creator & Community Referrals",
-        "collected_inr": 5572853.118,
-        "signed": 66.54799999999999,
-        "increment_inr": 735697.5609374996
+        "collected_inr": 5322739.6656,
+        "signed": 64.17920000000001,
+        "increment_inr": 698912.6828906247
       },
       {
         "step": "I1",
         "label": "I1 Cash Collection Desk",
-        "collected_inr": 7368107.943870001,
-        "signed": 66.54799999999999,
-        "increment_inr": 1795254.8258700008
+        "collected_inr": 7037422.229304001,
+        "signed": 64.17920000000001,
+        "increment_inr": 1714682.5637040008
       }
     ]
+  },
+  "downside": {
+    "overrides": {
+      "win_multiplier": 0.8,
+      "collection_prob_delta": -0.1,
+      "deal_multiplier": 0.9,
+      "warm_prospects_multiplier": 0.8
+    },
+    "totals": {
+      "capacity_proposals": 100,
+      "proposal_demand": 72.624,
+      "proposals": 72.624,
+      "capacity_binding": false,
+      "prospects": 164.08,
+      "conversations": 103.76,
+      "signed": 29.393760000000007,
+      "committed_inr": 2903028.1200000006,
+      "cash_type_inr": 2529165.8268000004,
+      "in_kind_inr": 373862.2932000001,
+      "withdrawal_loss_inr": 101166.63307200008,
+      "net_cash_inr": 2427999.1937280004,
+      "upsell_net_cash_inr": 197189.70163200004,
+      "collection_rate": 0.7415,
+      "collected_inr": 1946577.5659094404,
+      "uncollected_by_festival_inr": 678611.32945056
+    },
+    "costs": {
+      "budget_inr": 215000,
+      "closer_stipend_inr": 40000,
+      "finder_fees_inr": 27038.520622713608,
+      "total_cost_inr": 282038.5206227136,
+      "net_cash_after_costs_inr": 1664539.0452867267
+    },
+    "monte_carlo": {
+      "p10": 1299135.0,
+      "p50": 1920712.5,
+      "p90": 2653742.5,
+      "mean": 1953460.67
+    }
+  },
+  "mc_band_sensitivity": {
+    "k=10": {
+      "p10": 2404200.0,
+      "p90": 4614100.0
+    },
+    "k=20": {
+      "p10": 2572450.0,
+      "p90": 4485025.0
+    },
+    "k=40": {
+      "p10": 2645650.0,
+      "p90": 4407050.0
+    }
   },
   "budget_inr": 215000,
   "initiatives": [

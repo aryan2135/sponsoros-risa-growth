@@ -7,7 +7,7 @@ import { api, useDash } from "@/lib/client";
 export default function Analyst() {
   const { data } = useDash();
   const [prov, setProv] = useState("…");
-  useEffect(() => { api<{ ai_provider: string }>("GET", "health").then((h) => setProv(h.ai_provider === "anthropic" ? "Anthropic Claude (live LLM)" : h.ai_provider === "gemini" ? "Google Gemini (live LLM, auto-fallback across models)" : "Deterministic analyst (no API key configured)")); }, []);
+  useEffect(() => { api<{ ai_provider: string }>("GET", "meta").then((h) => setProv(h.ai_provider === "anthropic" ? "Anthropic Claude (live LLM)" : h.ai_provider === "gemini" ? "Google Gemini (live LLM, auto-fallback across models)" : "Deterministic analyst (no API key configured)")); }, []);
   return (
     <div className="space-y-4">
       <PageHeader title="AI Growth Analyst" subtitle="Grounded in live SponsorOS data through a fixed set of backend tools (no SQL access). Figures are computed deterministically; the analyst interprets them, flags missing data, and drafts tasks you must confirm." />

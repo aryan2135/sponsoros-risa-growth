@@ -54,14 +54,42 @@ def resolve(level: str, enabled: set[str], a=A):
         "addon": g["upsell"]["addon_cash_inr"][lv("I2" in enabled)],
         "sources": [],
     }
+    dedup = g["prospect_dedup_factor"][lv(plan_on)]
     for s in a["sources"]:
         ctrl = s["initiative"]
         on = (ctrl == "DEPRIORITISE" and plan_on) or (ctrl in enabled)
         L = lv(on)
         p["sources"].append(dict(id=s["id"], name=s["name"], initiative=ctrl,
-                                 prospects=s["prospects"][L], conv=s["p_conversation"][L], prop=s["p_proposal"][L],
-                                 win=s["p_win"][L], deal=s["avg_deal_inr"][L]))
+                                 prospects=s["prospects"][L] * (dedup if s.get("dedup") else 1.0), conv=s["p_conversation"][L], prop=s["p_proposal"][L],
+                                 win=s["p_win"][L], deal=s["avg_deal_inr"][L],
+                                 cash_share=(s["cash_share"][L] if "cash_share" in s else None)))
     return p
+
+
+def apply_overrides(p, o):
+    """Mirror of app/src/lib/model/engine.ts applyOverrides (subset used by the downside case and sensitivities)."""
+    p = copy.deepcopy(p)
+    for s in p["sources"]:
+        if "win_multiplier" in o: s["win"] = min(1.0, s["win"] * o["win_multiplier"])
+        if "deal_multiplier" in o: s["deal"] *= o["deal_multiplier"]
+        if "warm_prospects_multiplier" in o and s["id"] in ("alumni_referral", "creator_referral", "inbound"): s["prospects"] *= o["warm_prospects_multiplier"]
+    if "collection_prob_delta" in o:
+        p["phase_prob"] = [max(0.0, min(1.0, x + o["collection_prob_delta"])) for x in p["phase_prob"]]
+        p["bau_collection"] = max(0.0, min(1.0, p["bau_collection"] + o["collection_prob_delta"]))
+    return p
+
+
+def cs(p, s):
+    return s["cash_share"] if s.get("cash_share") is not None else p["cash_share"]
+
+
+def costs(level, t, df):
+    c = A["global"]["costs"]
+    budget = sum(i["budget_inr"] for i in A["initiatives"])
+    stipend = c["closer_stipend_inr"][level]
+    fee = c["finder_fee_rate"]["value"] * float(df[df.id.isin(c["finder_fee_rate"]["applies_to"])].collected_inr.sum())
+    return dict(budget_inr=budget, closer_stipend_inr=stipend, finder_fees_inr=fee, total_cost_inr=budget + stipend + fee,
+                net_cash_after_costs_inr=t["collected_inr"] - budget - stipend - fee)
 
 
 def collection_rate(p):
@@ -87,10 +115,10 @@ def expected(p):
     for r in rows:
         r["signed"] = r["proposals"] * r["win"]
         r["committed_inr"] = r["signed"] * r["deal"]
-        r["cash_type_inr"] = r["committed_inr"] * p["cash_share"]
+        r["cash_type_inr"] = r["committed_inr"] * cs(p, r)
         r["in_kind_inr"] = r["committed_inr"] - r["cash_type_inr"]
         r["net_cash_inr"] = r["cash_type_inr"] * (1 - p["withdrawal"])
-        r["upsell_net_cash_inr"] = r["signed"] * p["cash_share"] * p["attach"] * p["addon"] * (1 - p["withdrawal"])
+        r["upsell_net_cash_inr"] = r["signed"] * cs(p, r) * p["attach"] * p["addon"] * (1 - p["withdrawal"])
         r["collected_inr"] = (r["net_cash_inr"] + r["upsell_net_cash_inr"]) * cr
     df = pd.DataFrame(rows)
     tot = dict(
@@ -123,7 +151,7 @@ def waterfall(level):
     return pd.DataFrame(rows)
 
 
-def monte_carlo(p, n=10000, seed=7, concentration=20.0):
+def monte_carlo(p, n=10000, seed=7, concentration=20.0):  # noqa: C901
     """Uncertainty: Beta-distributed rates (mean = assumption, concentration k), binomial deal counts,
     deal sizes bootstrapped from the 2025 cash-deal shape, per-deal withdrawal and collection draws."""
     rng = np.random.default_rng(seed)
@@ -148,7 +176,7 @@ def monte_carlo(p, n=10000, seed=7, concentration=20.0):
             if k == 0: continue
             nsig += k
             vals = s["deal"] * rng.choice(DEAL_SHAPE, k)
-            is_cash = rng.random(k) < p["cash_share"]
+            is_cash = rng.random(k) < cs(p, s)
             kept = rng.random(k) >= p["withdrawal"]
             addon = (rng.random(k) < p["attach"]) * p["addon"]
             due = (vals + addon) * is_cash * kept
@@ -203,7 +231,7 @@ def main():
         _, bau = expected(resolve(level, set()))
         mc = dict(p10=float(np.percentile(sims, 10)), p50=float(np.percentile(sims, 50)), p90=float(np.percentile(sims, 90)),
                   mean=float(sims.mean()), signed_p10=float(np.percentile(ns, 10)), signed_p90=float(np.percentile(ns, 90)))
-        summary[level] = dict(totals=t, monte_carlo=mc, bau_collected_inr=bau["collected_inr"],
+        summary[level] = dict(totals=t, monte_carlo=mc, bau_collected_inr=bau["collected_inr"], costs=costs(level, t, df),
                               by_source=df[["id", "name", "initiative", "prospects", "conversations", "proposal_demand", "proposals",
                                             "signed", "committed_inr", "cash_type_inr", "in_kind_inr", "net_cash_inr",
                                             "upsell_net_cash_inr", "collected_inr"]].to_dict("records"),
@@ -218,6 +246,18 @@ def main():
         summary[level]["monte_carlo"]["p_reach_expected"] = float((sims >= tgt).mean())
         summary[level]["monte_carlo"]["p_reach_base_target"] = float((sims >= summary["base"]["totals"]["collected_inr"]).mean())
         summary[level]["monte_carlo"]["p_reach_2025_cash_type"] = float((sims >= 2_000_000).mean())
+    # downside case: base plan under simultaneous stress (overrides in assumptions.json)
+    dn = A["downside"]
+    pd_ = apply_overrides(resolve(dn["level"], all_enabled()), dn["overrides"])
+    ddf, dt = expected(pd_)
+    dmc, _ = monte_carlo(pd_)
+    summary["downside"] = dict(overrides=dn["overrides"], totals=dt, costs=costs(dn["level"], dt, ddf),
+                               monte_carlo=dict(p10=float(np.percentile(dmc, 10)), p50=float(np.percentile(dmc, 50)), p90=float(np.percentile(dmc, 90)), mean=float(dmc.mean())))
+    # Monte Carlo band sensitivity to the assumed rate-uncertainty concentration k
+    summary["mc_band_sensitivity"] = {}
+    for k in (10, 20, 40):
+        sims, _ = monte_carlo(resolve("base", all_enabled()), n=5000, concentration=float(k))
+        summary["mc_band_sensitivity"][f"k={k}"] = dict(p10=float(np.percentile(sims, 10)), p90=float(np.percentile(sims, 90)))
     # budget
     summary["budget_inr"] = sum(i["budget_inr"] for i in A["initiatives"])
     summary["initiatives"] = A["initiatives"]
@@ -233,6 +273,9 @@ def main():
         print(pd.DataFrame(s["by_source"])[["id", "proposal_demand", "proposals", "signed", "committed_inr", "collected_inr"]].round(1).to_string())
     print("\nSensitivity base"); print(pd.read_csv(OUT / "sensitivity_base.csv").round(3).to_string())
     print("budget", summary["budget_inr"])
+    for k in ("base", "stretch"): print(k, "costs", {a: round(b) for a, b in summary[k]["costs"].items()})
+    print("downside collected", round(summary["downside"]["totals"]["collected_inr"]), "MC", {a: round(b) for a, b in summary["downside"]["monte_carlo"].items()})
+    print("MC band vs k", {k: (round(v["p10"]), round(v["p90"])) for k, v in summary["mc_band_sensitivity"].items()})
 
 
 if __name__ == "__main__":

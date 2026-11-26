@@ -2,7 +2,8 @@ node_modules/
 .next/
 .data/
 .env
-.env.local
+.env.*
+!.env.example
 *.log
 __pycache__/
 analysis/raw_csv/

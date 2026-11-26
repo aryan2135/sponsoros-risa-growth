@@ -1,4 +1,11 @@
 import { test, expect, type Page } from "@playwright/test";
+import fs from "node:fs";
+import path from "node:path";
+
+// expected simulator figures come from the validated model outputs (never hard-coded)
+const MODEL = JSON.parse(fs.readFileSync(path.resolve(__dirname, "../../../outputs/model/forecast_summary.json"), "utf-8"));
+const SENS = fs.readFileSync(path.resolve(__dirname, "../../../outputs/model/sensitivity_base.csv"), "utf-8").split(String.fromCharCode(10)).find((l) => l.startsWith("Collection probabilities -10 pp"))!;
+const lakh = (v: number) => `₹${(v / 1e5).toFixed(1)} L`;
 
 const shot = (page: Page, name: string) => page.screenshot({ path: `../docs/screenshots/${name}.png`, fullPage: true });
 
@@ -6,7 +13,9 @@ test.describe.serial("SponsorOS end-to-end", () => {
   test("overview answers the five questions from live data", async ({ page }) => {
     // safety: e2e must run on a throwaway PGlite DB with the deterministic analyst, never on Supabase / a live LLM
     const h = await (await page.request.get("/api/health")).json();
-    expect(h).toMatchObject({ db: "pglite", ai_provider: "local" });
+    expect(h).toEqual({ status: "ok" });
+    const m = await (await page.request.get("/api/meta")).json();
+    expect(m).toMatchObject({ db: "pglite", ai_provider: "local" });
     await page.goto("/");
     await expect(page.getByText("1 · Cash actually received")).toBeVisible();
     await expect(page.getByText("Cash collected in the 2025 source data is unknown")).toBeVisible();
@@ -101,9 +110,9 @@ test.describe.serial("SponsorOS end-to-end", () => {
   test("simulator responds to levers and never touches actuals", async ({ page }) => {
     await page.goto("/simulator");
     const stat = page.locator(".card", { hasText: "Forecast cash collected pre-festival" }).first();
-    await expect(stat).toContainText("₹38.0 L");
+    await expect(stat).toContainText(lakh(MODEL.base.totals.collected_inr));
     await page.getByLabel("Collection probability shift").fill("-0.1");
-    await expect(stat).toContainText("₹33.6 L");
+    await expect(stat).toContainText(lakh(Number(SENS.split(",")[1])));
     await page.goto("/");
     await expect(page.getByText("₹18.0 L").first()).toBeVisible();
   });

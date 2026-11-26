@@ -4,7 +4,7 @@ import { api, useDash } from "@/lib/client";
 import { Tag } from "./ui";
 
 interface Proposal { recommendation: Record<string, unknown> & { issue: string; action: string; evidence: { summary: string }; diagnosis?: string; expected_impact?: string }; task: Record<string, unknown> & { title: string; owner_id: string | null; due_at: string; priority: string } }
-interface Msg { role: "user" | "assistant"; content: string; provider?: string; tools?: { name: string; input: unknown; summary: string }[]; proposals?: Proposal[]; as_of?: string }
+interface Msg { role: "user" | "assistant"; content: string; provider?: string; tools?: { name: string; input: unknown; summary: string }[]; proposals?: Proposal[]; as_of?: string; grounding?: { checked: number; matched: number; unmatched: string[] } }
 
 const SUGGESTIONS = [
   "How much cash have we actually collected?",
@@ -76,8 +76,8 @@ export default function Chat({ compact = false }: { compact?: boolean }) {
     const next = [...msgs, { role: "user" as const, content: text.trim() }];
     setMsgs(next); setInput(""); setBusy(true);
     try {
-      const r = await api<{ text: string; provider: string; tools: Msg["tools"]; proposals: Proposal[]; as_of: string }>("POST", "chat", { conversation_id: cid, mode, messages: next.map(({ role, content }) => ({ role, content })) });
-      setMsgs([...next, { role: "assistant", content: r.text, provider: r.provider, tools: r.tools, proposals: r.proposals, as_of: r.as_of }]);
+      const r = await api<{ text: string; provider: string; tools: Msg["tools"]; proposals: Proposal[]; as_of: string; grounding?: Msg["grounding"] }>("POST", "chat", { conversation_id: cid, mode, messages: next.map(({ role, content }) => ({ role, content })) });
+      setMsgs([...next, { role: "assistant", content: r.text, provider: r.provider, tools: r.tools, proposals: r.proposals, as_of: r.as_of, grounding: r.grounding }]);
     } catch (e) { setMsgs([...next, { role: "assistant", content: `Error: ${(e as Error).message}` }]); } finally { setBusy(false); }
   };
   return (
@@ -98,6 +98,11 @@ export default function Chat({ compact = false }: { compact?: boolean }) {
             ) : (
               <div className="rounded-xl rounded-bl-sm border border-slate-200 bg-white px-3.5 py-2.5 text-[13px] leading-relaxed text-slate-800">
                 <div className="prose-chat" dangerouslySetInnerHTML={{ __html: md(m.content) }} />
+                {m.grounding && m.grounding.checked > 0 && (
+                  <p className={`mt-2 text-[11px] ${m.grounding.unmatched.length ? "text-amber-700" : "text-emerald-700"}`}>
+                    {m.grounding.unmatched.length ? `⚠ ${m.grounding.matched}/${m.grounding.checked} ₹ figures traced to backend tool data. Not traced (model-derived, verify): ${m.grounding.unmatched.join(", ")}` : `✓ All ${m.grounding.checked} ₹ figures traced to backend tool data`}
+                  </p>
+                )}
                 {m.proposals?.map((p, k) => <ProposalCard key={k} p={p} onDone={() => {}} />)}
                 {!!m.tools?.length && (
                   <details className="mt-2 text-[11px] text-slate-500">

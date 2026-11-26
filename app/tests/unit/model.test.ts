@@ -1,7 +1,7 @@
 import { describe, it, expect } from "vitest";
 import fs from "node:fs";
 import path from "node:path";
-import { resolve, expected, allEnabled, waterfall, runScenario, monteCarlo } from "@/lib/model/engine";
+import { resolve, expected, allEnabled, waterfall, runScenario, monteCarlo, planCosts, downside } from "@/lib/model/engine";
 
 const root = path.resolve(__dirname, "../../..");
 const py = JSON.parse(fs.readFileSync(path.join(root, "outputs/model/forecast_summary.json"), "utf-8"));
@@ -28,9 +28,24 @@ describe("financial model", () => {
   it("in-kind never enters cash: cash_share 0 => zero collected", () => {
     expect(runScenario("base", { cash_share: 0 }).totals.collected_inr).toBe(0);
   });
-  it("collection -10pp lowers forecast by the expected amount", () => {
-    const a = runScenario("base").totals.collected_inr, b = runScenario("base", { collection_prob_delta: -0.1 }).totals.collected_inr;
-    expect(a - b).toBeCloseTo(py.base.totals.collected_inr - 3364676.288, -1);
+  it("collection -10pp lowers forecast by the same amount as the Python sensitivity", () => {
+    const sens = fs.readFileSync(path.join(root, "outputs/model/sensitivity_base.csv"), "utf-8").split(/\r?\n/).find((l) => l.startsWith("Collection probabilities -10 pp"))!;
+    const pyCollected = Number(sens.split(",")[1]);
+    expect(runScenario("base", { collection_prob_delta: -0.1 }).totals.collected_inr).toBeCloseTo(pyCollected, 2);
+  });
+  for (const level of ["base", "stretch"] as const)
+    it(`costs and net cash match Python (${level})`, () => {
+      const c = planCosts(level, expected(resolve(level, allEnabled())));
+      for (const k of ["budget_inr", "closer_stipend_inr", "finder_fees_inr", "total_cost_inr", "net_cash_after_costs_inr"] as const) expect(c[k]).toBeCloseTo(py[level].costs[k], 2);
+    });
+  it("downside case matches Python and stays below base", () => {
+    const d = downside();
+    expect(d.totals.collected_inr).toBeCloseTo(py.downside.totals.collected_inr, 2);
+    expect(d.totals.collected_inr).toBeLessThan(py.base.totals.collected_inr);
+  });
+  it("renewal cash share uses the source override (20 of 24 renewing sponsors were cash)", () => {
+    const r = expected(resolve("base", allEnabled())).rows.find((x) => x.id === "renewal")!;
+    expect(r.cash_type_inr / r.committed_inr).toBeCloseTo(0.83, 6);
   });
   it("Monte Carlo is centred near the expected value", () => {
     const mc = monteCarlo(resolve("base", allEnabled()), 1500);

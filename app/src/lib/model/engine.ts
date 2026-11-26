@@ -16,7 +16,7 @@ export const STEPS: [string, string][] = [
   ["I1", "I1 Cash Collection Desk"],
 ];
 
-export interface SourceParams { id: string; name: string; initiative: string; prospects: number; conv: number; prop: number; win: number; deal: number }
+export interface SourceParams { id: string; name: string; initiative: string; prospects: number; conv: number; prop: number; win: number; deal: number; cash_share: number | null }
 export interface Params {
   cash_share: number; withdrawal: number; closers: number; proposals_per_closer: number; collection_desk: boolean; bau_collection: number;
   phase_mix: number[]; phase_prob: number[]; attach: number; addon: number; sources: SourceParams[];
@@ -43,12 +43,15 @@ export function resolve(level: Level, enabled: Set<string>): Params {
     sources: A.sources.map((s) => {
       const on = (s.initiative === "DEPRIORITISE" && planOn) || enabled.has(s.initiative);
       const L = lv(on);
-      return { id: s.id, name: s.name, initiative: s.initiative, prospects: pick(s.prospects, L), conv: pick(s.p_conversation, L), prop: pick(s.p_proposal, L), win: pick(s.p_win, L), deal: pick(s.avg_deal_inr, L) };
+      const dedup = (s as { dedup?: boolean }).dedup ? pick(g.prospect_dedup_factor as LV, lv(planOn)) : 1;
+      const csh = (s as { cash_share?: LV }).cash_share;
+      return { id: s.id, name: s.name, initiative: s.initiative, prospects: pick(s.prospects, L) * dedup, conv: pick(s.p_conversation, L), prop: pick(s.p_proposal, L), win: pick(s.p_win, L), deal: pick(s.avg_deal_inr, L), cash_share: csh ? pick(csh, L) : null };
     }),
   };
 }
 export const allEnabled = () => new Set(STEPS.map((s) => s[0]).filter((k) => k !== "BAU"));
 
+const cs = (p: Params, s: { cash_share: number | null }) => s.cash_share ?? p.cash_share;
 export const collectionRate = (p: Params) => (p.collection_desk ? p.phase_mix.reduce((a, m, i) => a + m * p.phase_prob[i], 0) : p.bau_collection);
 
 export function expected(p: Params) {
@@ -63,10 +66,10 @@ export function expected(p: Params) {
   for (const r of rows) {
     r.signed = r.proposals * r.win;
     r.committed_inr = r.signed * r.deal;
-    r.cash_type_inr = r.committed_inr * p.cash_share;
+    r.cash_type_inr = r.committed_inr * cs(p, r);
     r.in_kind_inr = r.committed_inr - r.cash_type_inr;
     r.net_cash_inr = r.cash_type_inr * (1 - p.withdrawal);
-    r.upsell_net_cash_inr = r.signed * p.cash_share * p.attach * p.addon * (1 - p.withdrawal);
+    r.upsell_net_cash_inr = r.signed * cs(p, r) * p.attach * p.addon * (1 - p.withdrawal);
     r.collected_inr = (r.net_cash_inr + r.upsell_net_cash_inr) * cr;
   }
   const S = (k: keyof (typeof rows)[number]) => rows.reduce((a, r) => a + (r[k] as number), 0);
@@ -111,7 +114,7 @@ export function applyOverrides(p: Params, o: Overrides) {
     if (o.win_multiplier != null) s.win = clamp(s.win * o.win_multiplier);
     if (o.deal_multiplier != null) s.deal *= o.deal_multiplier;
   }
-  if (o.cash_share != null) p.cash_share = clamp(o.cash_share);
+  if (o.cash_share != null) { p.cash_share = clamp(o.cash_share); for (const s of p.sources) s.cash_share = null; } // lever overrides per-source shares too
   if (o.withdrawal != null) p.withdrawal = clamp(o.withdrawal);
   if (o.closers != null) p.closers = Math.max(0, o.closers);
   if (o.proposals_per_closer != null) p.proposals_per_closer = Math.max(0, o.proposals_per_closer);
@@ -127,7 +130,7 @@ export function runScenario(level: Level, o: Overrides = {}) {
   const baseline = expected(resolve(level, allEnabled())).totals.collected_inr;
   const bau = expected(resolve(level, new Set())).totals.collected_inr;
   const budget = o.budget_inr ?? A.initiatives.reduce((a, i) => a + i.budget_inr, 0);
-  return { level, overrides: o, params: p, ...res, plan_default_collected_inr: baseline, bau_collected_inr: bau, delta_vs_plan_inr: res.totals.collected_inr - baseline, budget_inr: budget, cash_per_budget_rupee: budget ? (res.totals.collected_inr - bau) / budget : null, waterfall: waterfall(level, (q) => applyOverrides(q, o)), label: "[SIMULATION] forward-looking expected values; not actuals" };
+  return { level, overrides: o, params: p, ...res, costs: planCosts(level, res), plan_default_collected_inr: baseline, bau_collected_inr: bau, delta_vs_plan_inr: res.totals.collected_inr - baseline, budget_inr: budget, cash_per_budget_rupee: budget ? (res.totals.collected_inr - bau) / budget : null, waterfall: waterfall(level, (q) => applyOverrides(q, o)), label: "[SIMULATION] forward-looking expected values; not actuals" };
 }
 
 // ---------------- Monte Carlo (seeded) ----------------
@@ -156,7 +159,7 @@ export function monteCarlo(p: Params, n = 3000, seed = 7) {
       const k = binom(r, props, beta(r, s.win));
       for (let j = 0; j < k; j++) {
         const val = s.deal * (DEALS_2025[Math.floor(r() * DEALS_2025.length)] / MEAN_2025);
-        if (r() >= p.cash_share || r() < p.withdrawal) continue;
+        if (r() >= cs(p, s) || r() < p.withdrawal) continue;
         const due = val + (r() < p.attach ? p.addon : 0);
         let got: boolean;
         if (p.collection_desk) { const u = r(); const ph = u < p.phase_mix[0] ? 0 : u < p.phase_mix[0] + p.phase_mix[1] ? 1 : 2; got = r() < p.phase_prob[ph]; } else got = r() < p.bau_collection;
@@ -168,6 +171,20 @@ export function monteCarlo(p: Params, n = 3000, seed = 7) {
   out.sort((a, b) => a - b);
   const q = (x: number) => out[Math.min(out.length - 1, Math.floor(x * out.length))];
   return { p10: q(0.1), p50: q(0.5), p90: q(0.9), mean: out.reduce((a, b) => a + b, 0) / n, n };
+}
+
+/** Costs deducted for the net view (gross collected cash is the assignment objective). */
+export function planCosts(level: Level, res: ReturnType<typeof expected>) {
+  const c = A.global.costs;
+  const budget = A.initiatives.reduce((a, i) => a + i.budget_inr, 0);
+  const stipend = (c.closer_stipend_inr as LV)[level];
+  const fee = c.finder_fee_rate.value * res.rows.filter((r) => c.finder_fee_rate.applies_to.includes(r.id)).reduce((a, r) => a + r.collected_inr, 0);
+  return { budget_inr: budget, closer_stipend_inr: stipend, finder_fees_inr: fee, total_cost_inr: budget + stipend + fee, net_cash_after_costs_inr: res.totals.collected_inr - budget - stipend - fee };
+}
+export function downside() {
+  const d = A.downside;
+  const res = expected(applyOverrides(resolve(d.level as Level, allEnabled()), d.overrides as Overrides));
+  return { overrides: d.overrides, ...res, costs: planCosts(d.level as Level, res) };
 }
 
 export const ASSUMPTIONS = A;

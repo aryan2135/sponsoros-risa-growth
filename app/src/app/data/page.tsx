@@ -12,6 +12,8 @@ export default function DataPage() {
   const [s, setS] = useState({ stale_days: "", prob: "", adv: "", advDays: "", balDays: "" });
   const [tg, setTg] = useState({ qualified: "", confirmed: "", cash: "", version: "Revised by team" });
   const [confirmReset, setConfirmReset] = useState(false);
+  const [resetEnabled, setResetEnabled] = useState(false);
+  useEffect(() => { api<{ reset_enabled: boolean }>("GET", "meta").then((m) => setResetEnabled(m.reset_enabled)).catch(() => setResetEnabled(false)); }, []);
   useEffect(() => { api<{ assumptions: Assump }>("GET", "scenarios").then((r) => setA(r.assumptions)); api<typeof auditLog>("GET", "audit").then(setAudit); }, [data]);
   useEffect(() => {
     if (!data) return;
@@ -49,7 +51,7 @@ export default function DataPage() {
         <Card title="Operating assumptions" subtitle="Used by the live forecast, staleness rules and payment-schedule generator">
           <form className="grid grid-cols-2 gap-3" onSubmit={(e) => { e.preventDefault(); mutate("PATCH", "settings", { stale_days: Number(s.stale_days), forecast_collection_probability: Number(s.prob), collection_policy: { advance_pct: Number(s.adv), advance_due_days_after_signing: Number(s.advDays), balance_due_days_before_festival: Number(s.balDays) } }, "Assumptions saved — analytics recomputed"); }}>
             <Field label="Stale after (days in stage)"><input className="input w-full num" type="number" min={1} value={s.stale_days} onChange={(e) => setS({ ...s, stale_days: e.target.value })} /></Field>
-            <Field label="Collection probability (forecast)" hint="[ASSUMPTION] base-model blended 0.87"><input className="input w-full num" type="number" min={0} max={1} step={0.01} value={s.prob} onChange={(e) => setS({ ...s, prob: e.target.value })} /></Field>
+            <Field label="Collection probability (forecast)" hint="[ASSUMPTION] base-model blended 0.84 (model v1.1.0)"><input className="input w-full num" type="number" min={0} max={1} step={0.01} value={s.prob} onChange={(e) => setS({ ...s, prob: e.target.value })} /></Field>
             <Field label="Advance % at signing"><input className="input w-full num" type="number" min={0} max={1} step={0.05} value={s.adv} onChange={(e) => setS({ ...s, adv: e.target.value })} /></Field>
             <Field label="Advance due (days after signing)"><input className="input w-full num" type="number" min={0} value={s.advDays} onChange={(e) => setS({ ...s, advDays: e.target.value })} /></Field>
             <Field label="Balance due (days before festival)"><input className="input w-full num" type="number" min={0} value={s.balDays} onChange={(e) => setS({ ...s, balDays: e.target.value })} /></Field>
@@ -82,7 +84,7 @@ export default function DataPage() {
         </Card>
         <Card title="Reset demo data">
           <p className="text-[12px] text-slate-600">Restores the operational layer to the imported workbook: removes app-created records, tasks, receipts, milestones, spend, scenarios and settings. Raw source rows are untouched.</p>
-          {!confirmReset ? <button className="btn mt-3 text-rose-700" onClick={() => setConfirmReset(true)}>Reset to source…</button> : <div className="mt-3 flex gap-2"><button className="btn-primary bg-rose-700" onClick={async () => { await mutate("POST", "admin/reset", {}, "Reset to source data"); setConfirmReset(false); }}>Confirm reset</button><button className="btn" onClick={() => setConfirmReset(false)}>Cancel</button></div>}
+          {!resetEnabled ? <p className="mt-3 text-[12px] font-medium text-slate-500">Disabled on this deployment (ALLOW_RESET is not &quot;true&quot;).</p> : !confirmReset ? <button className="btn mt-3 text-rose-700" onClick={() => setConfirmReset(true)}>Reset to source…</button> : <div className="mt-3 flex gap-2"><button className="btn-primary bg-rose-700" onClick={async () => { await mutate("POST", "admin/reset", {}, "Reset to source data"); setConfirmReset(false); }}>Confirm reset</button><button className="btn" onClick={() => setConfirmReset(false)}>Cancel</button></div>}
         </Card>
       </div>
     </div>

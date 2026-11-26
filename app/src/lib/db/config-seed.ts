@@ -9,7 +9,7 @@ export const DEFAULT_SETTINGS: Record<string, unknown> = {
   collection_policy: { advance_pct: 0.5, advance_due_days_after_signing: 2, balance_due_days_before_festival: 7 },
   // [ASSUMPTION] probability that an UNPAID confirmed cash commitment is received before the festival,
   // used only in the forward-looking cash forecast (never in actuals). Base-case blended value from model.
-  forecast_collection_probability: 0.87,
+  forecast_collection_probability: 0.84, // = base model v1.1.0 blended collection rate
 };
 
 const THRESHOLDS: Array<[string, string, string, string, "higher_better" | "lower_better", number, number, number, string]> = [

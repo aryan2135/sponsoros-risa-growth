@@ -14,7 +14,13 @@ services:
         value: 22.12.0
       - key: DATABASE_URL       # Supabase IPv4 pooler URI, password URL-encoded
         sync: false
-      - key: GEMINI_API_KEY
+      - key: GEMINI_API_KEY      # server-side only
         sync: false
+      - key: AI_PROVIDER         # pin the provider; leave Anthropic keys unset on this deployment
+        value: gemini
+      - key: APP_PASSWORD        # shared demo access gate (not multi-user auth); enter in the dashboard
+        sync: false
+      - key: ALLOW_RESET         # fail closed: reset endpoint only works when exactly "true"
+        value: "false"
       - key: GEMINI_MODEL
         value: gemini-3.8-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-flash-lite-latest
