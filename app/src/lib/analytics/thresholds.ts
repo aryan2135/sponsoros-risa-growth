@@ -30,6 +30,10 @@ function metric(snap: Snapshot, key: string): { value: number | null; sample: nu
     }
     case "deals.avg_confirmed_cash_inr":
       return { value: snap.deals.avg_confirmed_cash_inr, sample: snap.deals.confirmed_cash_count, evidence: `${snap.deals.confirmed_cash_count} confirmed cash deals, total ₹${snap.deals.confirmed_cash_inr.toLocaleString("en-IN")}` };
+    case "pipeline.qualified_opportunity_coverage": {
+      const q = snap.funnel.qualified_brands, miss = snap.qualified_without_opportunity.length;
+      return { value: q ? (q - miss) / q : null, sample: q, evidence: `${q - miss}/${q} qualified brands have an opportunity (${miss} never pitched)` };
+    }
     case "pipeline.qualified_without_opportunity":
       return { value: snap.qualified_without_opportunity.length, sample: snap.funnel.qualified_brands, evidence: `${snap.qualified_without_opportunity.length} of ${snap.funnel.qualified_brands} qualified brands have no opportunity` };
   }

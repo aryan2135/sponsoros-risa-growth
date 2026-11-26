@@ -17,7 +17,7 @@ const THRESHOLDS: Array<[string, string, string, string, "higher_better" | "lowe
   ["initiative", "I1", "collection.on_time_rate", "Due cash received on time", "higher_better", 0.8, 0.6, 1, "ratio"],
   ["initiative", "I1", "collection.invoice_coverage", "Confirmed cash deals with a payment schedule", "higher_better", 0.9, 0.5, 1, "ratio"],
   ["initiative", "I2", "deals.avg_confirmed_cash_inr", "Average confirmed cash deal", "higher_better", 125000, 90000, 5, "inr"],
-  ["initiative", "I3", "pipeline.qualified_without_opportunity", "Qualified brands with no opportunity", "lower_better", 3, 12, 0, "count"],
+  ["initiative", "I3", "pipeline.qualified_opportunity_coverage", "Qualified brands that have an opportunity", "higher_better", 0.9, 0.6, 5, "ratio"],
   ["initiative", "I4", "campaign.SC02.win_rate", "Warm intros: closed-won rate", "higher_better", 0.5, 0.25, 3, "ratio"],
   ["initiative", "I4", "campaign.SC02.meeting_rate", "Warm intros: brands met / brands touched", "higher_better", 0.7, 0.4, 5, "ratio"],
   ["initiative", "I5", "campaign.SC05.meeting_rate", "Creator referrals: brands met / brands touched", "higher_better", 0.7, 0.4, 5, "ratio"],

@@ -12,11 +12,11 @@ export default function Overview() {
   const s = data.snapshot, c = s.cash, f = s.funnel;
   const goal = s.targets?.cash.goal ?? null;
   const waterfall = [
-    { name: "Open pipeline (cash, face value)", v: c.open_pipeline_cash_inr },
-    { name: "Confirmed cash-type", v: c.confirmed_cash_inr },
+    { name: "Open pipeline", v: c.open_pipeline_cash_inr },
+    { name: "Confirmed cash", v: c.confirmed_cash_inr },
     { name: "Scheduled", v: c.scheduled_inr },
     { name: "Invoiced", v: c.invoiced_inr },
-    { name: "Verified received", v: c.received_verified_inr },
+    { name: "Received", v: c.received_verified_inr },
   ];
   const funnel = [
     ["Brands touched", f.brands_touched], ["Replied", f.brands_replied], ["Met", f.brands_met], ["Qualified", f.qualified_brands], ["With opportunity", f.brands_with_opportunity], ["Confirmed", f.confirmed_brands],
