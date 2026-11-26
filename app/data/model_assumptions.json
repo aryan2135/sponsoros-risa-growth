@@ -1,0 +1,460 @@
+{
+  "meta": {
+    "name": "CampusFest next-edition sponsorship cash model",
+    "version": "1.0.0",
+    "objective": "Expected sponsorship CASH collected before the festival opens (INR). In-kind value never enters cash.",
+    "calibration_snapshot": "CampusFest 2025, pre-festival cutoff 2025-04-11 23:59:59 IST",
+    "levels": "bau = repeat the 2025 playbook; base = realistic plan; stretch = ambitious plan",
+    "label_legend": "[SOURCE] dataset fact, [CALCULATED] derived from dataset, [ASSUMPTION] planning assumption"
+  },
+  "global": {
+    "cash_share_of_committed_value": {
+      "bau": 0.89,
+      "base": 0.89,
+      "stretch": 0.9,
+      "label": "[CALCULATED]",
+      "basis": "2025 confirmed cash-type value / total confirmed value = 2,000,000 / 2,240,000 = 0.893 (pre-festival cutoff)"
+    },
+    "post_signing_withdrawal_rate": {
+      "bau": 0.04,
+      "base": 0.04,
+      "stretch": 0.03,
+      "label": "[CALCULATED]/[ASSUMPTION]",
+      "basis": "2025: 1 of 25 opportunities that ever reached partner_confirmed later withdrew (O006) = 4%. Stretch assumes signed-contract discipline cuts this to 3%."
+    },
+    "closers": {
+      "bau": 4,
+      "base": 5,
+      "stretch": 6,
+      "label": "[SOURCE]/[ASSUMPTION]",
+      "basis": "2025 had 4 named owners (T01, T02, T03, T05). Plan adds 1 (base) / 2 (stretch) closers."
+    },
+    "proposals_per_closer": {
+      "bau": 20,
+      "base": 20,
+      "stretch": 20,
+      "label": "[CALCULATED]/[ASSUMPTION]",
+      "basis": "2025: 46 proposals over ~10 active weeks across 3 opportunity owners (~15 each). A 16-week season at the same weekly pace = ~20 per closer."
+    },
+    "collection": {
+      "bau_flat_rate": 0.7,
+      "bau_label": "[ASSUMPTION]",
+      "bau_basis": "2025 had no invoice, milestone or receipt records at all. Without a collection process we assume 70% of net cash-type commitments arrive before the festival.",
+      "signing_phase_mix": {
+        "base": [
+          0.45,
+          0.4,
+          0.15
+        ],
+        "stretch": [
+          0.55,
+          0.35,
+          0.1
+        ]
+      },
+      "collect_prob_by_phase": {
+        "base": [
+          0.95,
+          0.88,
+          0.6
+        ],
+        "stretch": [
+          0.97,
+          0.92,
+          0.7
+        ]
+      },
+      "phases": [
+        "early: signed T-16 to T-9 weeks",
+        "mid: signed T-8 to T-4 weeks",
+        "late: signed T-3 to T-0 weeks"
+      ],
+      "label": "[ASSUMPTION]",
+      "basis": "With the Cash Collection Desk: 50% advance invoiced within 48h of signing, balance due T-7 days. 2025 confirmations were spread over 8 weeks (Feb 10 - Apr 6), so most signings can land early/mid."
+    },
+    "upsell": {
+      "attach_rate": {
+        "bau": 0.0,
+        "base": 0.2,
+        "stretch": 0.3
+      },
+      "addon_cash_inr": {
+        "bau": 0,
+        "base": 40000,
+        "stretch": 50000
+      },
+      "label": "[ASSUMPTION]",
+      "basis": "Add-on menu (sampling stall, stage branding, digital pack) sold to signed cash sponsors. Applied to expected signed cash-type deals."
+    }
+  },
+  "sources": [
+    {
+      "id": "renewal",
+      "name": "2025 sponsor renewals",
+      "initiative": "I2",
+      "prospects": {
+        "bau": 24,
+        "base": 24,
+        "stretch": 24
+      },
+      "p_conversation": {
+        "bau": 0.5,
+        "base": 0.9,
+        "stretch": 0.95
+      },
+      "p_proposal": {
+        "bau": 0.6,
+        "base": 0.85,
+        "stretch": 0.9
+      },
+      "p_win": {
+        "bau": 0.4,
+        "base": 0.55,
+        "stretch": 0.6
+      },
+      "avg_deal_inr": {
+        "bau": 100000,
+        "base": 125000,
+        "stretch": 135000
+      },
+      "basis": "[SOURCE] 24 brands confirmed in 2025 (20 cash, 4 in-kind). Rates are [ASSUMPTION]: no renewal history exists. Deal uplift from a tier ladder [ASSUMPTION]; 2025 avg confirmed cash deal = 100,000 [CALCULATED]."
+    },
+    {
+      "id": "qualified_recovery",
+      "name": "Qualified-but-unpitched 2025 brands",
+      "initiative": "I3",
+      "prospects": {
+        "bau": 18,
+        "base": 18,
+        "stretch": 18
+      },
+      "p_conversation": {
+        "bau": 0.25,
+        "base": 0.7,
+        "stretch": 0.8
+      },
+      "p_proposal": {
+        "bau": 0.5,
+        "base": 0.75,
+        "stretch": 0.8
+      },
+      "p_win": {
+        "bau": 0.45,
+        "base": 0.45,
+        "stretch": 0.5
+      },
+      "avg_deal_inr": {
+        "bau": 90000,
+        "base": 95000,
+        "stretch": 100000
+      },
+      "basis": "[CALCULATED] 18 brands whose latest status was 'qualified' at the cutoff but had no opportunity. 13 of 18 came from warm/inbound sources. Rates [ASSUMPTION], haircut vs warm history."
+    },
+    {
+      "id": "inbound",
+      "name": "Inbound partner page / form",
+      "initiative": "I3",
+      "prospects": {
+        "bau": 17,
+        "base": 28,
+        "stretch": 36
+      },
+      "p_conversation": {
+        "bau": 0.75,
+        "base": 0.75,
+        "stretch": 0.8
+      },
+      "p_proposal": {
+        "bau": 0.65,
+        "base": 0.65,
+        "stretch": 0.7
+      },
+      "p_win": {
+        "bau": 0.55,
+        "base": 0.55,
+        "stretch": 0.6
+      },
+      "avg_deal_inr": {
+        "bau": 100000,
+        "base": 105000,
+        "stretch": 115000
+      },
+      "basis": "[CALCULATED] 2025 Partner Interest Form: 17 brands, 13 met, 7 proposals, 7 confirmed; avg cash deal 105,833. Rates are warm-history haircuts [ASSUMPTION]."
+    },
+    {
+      "id": "alumni_referral",
+      "name": "Alumni & sponsor referral engine",
+      "initiative": "I4",
+      "prospects": {
+        "bau": 8,
+        "base": 45,
+        "stretch": 60
+      },
+      "p_conversation": {
+        "bau": 0.75,
+        "base": 0.75,
+        "stretch": 0.8
+      },
+      "p_proposal": {
+        "bau": 0.65,
+        "base": 0.65,
+        "stretch": 0.7
+      },
+      "p_win": {
+        "bau": 0.55,
+        "base": 0.55,
+        "stretch": 0.6
+      },
+      "avg_deal_inr": {
+        "bau": 100000,
+        "base": 115000,
+        "stretch": 125000
+      },
+      "basis": "[CALCULATED] 2025 Warm Partner Introductions: 8 brands, 8 met, 9 proposals, 8 confirmed (96% of proposals); avg cash deal 106,667. Forward rates halve the historical brand-to-signed yield (54.5% -> 26.8% base) [ASSUMPTION]."
+    },
+    {
+      "id": "creator_referral",
+      "name": "Creator & community referral network",
+      "initiative": "I5",
+      "prospects": {
+        "bau": 19,
+        "base": 35,
+        "stretch": 45
+      },
+      "p_conversation": {
+        "bau": 0.75,
+        "base": 0.75,
+        "stretch": 0.8
+      },
+      "p_proposal": {
+        "bau": 0.65,
+        "base": 0.65,
+        "stretch": 0.7
+      },
+      "p_win": {
+        "bau": 0.55,
+        "base": 0.55,
+        "stretch": 0.6
+      },
+      "avg_deal_inr": {
+        "bau": 90000,
+        "base": 95000,
+        "stretch": 100000
+      },
+      "basis": "[CALCULATED] 2025 Creator Network Referrals: 19 brands, 15 met, 9 proposals, 9 confirmed; avg cash deal 90,625. Forward rates are haircuts [ASSUMPTION]."
+    },
+    {
+      "id": "cold_outbound",
+      "name": "Cold outbound (email / LinkedIn / revival)",
+      "initiative": "DEPRIORITISE",
+      "prospects": {
+        "bau": 148,
+        "base": 40,
+        "stretch": 40
+      },
+      "p_conversation": {
+        "bau": 0.16,
+        "base": 0.2,
+        "stretch": 0.25
+      },
+      "p_proposal": {
+        "bau": 0.6,
+        "base": 0.6,
+        "stretch": 0.6
+      },
+      "p_win": {
+        "bau": 0.05,
+        "base": 0.08,
+        "stretch": 0.1
+      },
+      "avg_deal_inr": {
+        "bau": 90000,
+        "base": 90000,
+        "stretch": 100000
+      },
+      "basis": "[CALCULATED] 2025 cold channels: 148 brands, 24 met (16%), 21 proposals, 1 confirmation which later withdrew; 0 confirmed at cutoff. A non-zero win rate is a generous [ASSUMPTION]. Plan cuts volume to a 40-brand, meeting-gated ABM test."
+    },
+    {
+      "id": "anchor_tier",
+      "name": "Anchor / title-tier prospects (stretch only)",
+      "initiative": "I2",
+      "prospects": {
+        "bau": 0,
+        "base": 0,
+        "stretch": 8
+      },
+      "p_conversation": {
+        "bau": 0.5,
+        "base": 0.5,
+        "stretch": 0.5
+      },
+      "p_proposal": {
+        "bau": 0.5,
+        "base": 0.5,
+        "stretch": 0.5
+      },
+      "p_win": {
+        "bau": 0.25,
+        "base": 0.25,
+        "stretch": 0.25
+      },
+      "avg_deal_inr": {
+        "bau": 800000,
+        "base": 800000,
+        "stretch": 800000
+      },
+      "basis": "[ASSUMPTION] No 2025 deal exceeded 200,000. Excluded from base so the plan never depends on a title sponsor; stretch carries only its expected value (0.5 deals) across 8 prospects."
+    }
+  ],
+  "initiatives": [
+    {
+      "id": "I1",
+      "rank": 1,
+      "name": "Cash Collection Desk",
+      "controls": [
+        "global.collection"
+      ],
+      "budget_inr": 15000,
+      "people": "1 finance lead (50%) + SponsorOS",
+      "person_weeks": 8,
+      "confidence": 0.8,
+      "weeks_to_first_cash": 1,
+      "timeline": "W1-W16 (live from first signature)",
+      "concept": "Milestone billing (50% advance in 48h, balance T-7), invoice-on-signature, overdue escalation ladder, receipt verification.",
+      "experiment": "W1-W4: invoice every signed deal within 48h; compare days-to-first-payment against 7-day goal.",
+      "kpis": [
+        "% signed cash invoiced <=48h",
+        "days signature->first receipt",
+        "% due cash received on time",
+        "overdue INR"
+      ],
+      "scale": ">=80% of due cash received on time by W6",
+      "change": "60-80% on time: switch to 100% advance for late signers, CFO-level escalation",
+      "stop": "Never stop; if <60% on time, reassign closers to collections for 1 week"
+    },
+    {
+      "id": "I2",
+      "rank": 2,
+      "name": "Renewal, Tiering & Upsell Sprint",
+      "controls": [
+        "sources.renewal",
+        "sources.anchor_tier",
+        "global.upsell"
+      ],
+      "budget_inr": 60000,
+      "people": "2 closers (60%) for W1-W6",
+      "person_weeks": 7,
+      "confidence": 0.65,
+      "weeks_to_first_cash": 3,
+      "timeline": "W1-W6 renewals; add-ons W4-W14",
+      "concept": "Proof-of-performance recap to all 24 2025 sponsors with a 3-tier rate card (Associate / Category / Activation) and an add-on menu.",
+      "experiment": "First 8 renewal pitches: A/B the tier anchor (lead with Category vs Associate tier).",
+      "kpis": [
+        "renewal meetings / sponsors pitched",
+        "renewal win rate",
+        "avg signed cash deal",
+        "add-on attach rate"
+      ],
+      "scale": ">=50% of first 8 pitches convert to proposal within 2 weeks",
+      "change": "25-50%: shorten deck, lead with 2025 proof, offer early-renewal discount <=10%",
+      "stop": "<25% after 12 pitches: stop tier upsell, renew at 2025 price"
+    },
+    {
+      "id": "I3",
+      "rank": 3,
+      "name": "Qualified-Lead Recovery + Inbound Partner Page",
+      "controls": [
+        "sources.qualified_recovery",
+        "sources.inbound"
+      ],
+      "budget_inr": 40000,
+      "people": "1 closer (50%) + 1 designer (1 week)",
+      "person_weeks": 6,
+      "confidence": 0.6,
+      "weeks_to_first_cash": 3,
+      "timeline": "W1-W4 recovery blitz; page live W2, runs to W14",
+      "concept": "Pitch the 18 qualified-but-never-pitched brands within 10 days; publish a partner page with rate card and 2025 proof to lift inbound volume.",
+      "experiment": "Proposal to all 18 within 10 days; track proposal->meeting conversion and inbound submissions per week.",
+      "kpis": [
+        "proposals sent / 18",
+        "inbound submissions per week",
+        "inbound -> meeting rate"
+      ],
+      "scale": ">=6 of 18 recovery proposals in negotiation by W4; >=2 inbound/week",
+      "change": "3-5 in negotiation: re-qualify decision maker; refresh page CTA",
+      "stop": "<3 by W4: return brands to nurture; <1 inbound/week by W6: stop page spend"
+    },
+    {
+      "id": "I4",
+      "rank": 4,
+      "name": "Alumni & Sponsor Referral Engine",
+      "controls": [
+        "sources.alumni_referral"
+      ],
+      "budget_inr": 70000,
+      "people": "1 alumni lead + 2 closers (40%)",
+      "person_weeks": 14,
+      "confidence": 0.55,
+      "weeks_to_first_cash": 5,
+      "timeline": "W2-W14",
+      "concept": "Map alumni in marketing/partnership roles plus every renewed sponsor; ask each for 2 warm intros using a referral kit; recognise referrers (VIP passes, stage credit).",
+      "experiment": "Pilot with first 30 alumni asks: measure intros per ask and intro->meeting rate.",
+      "kpis": [
+        "intros received / alumni asks",
+        "intro -> meeting rate",
+        "meeting -> proposal rate",
+        "referral-sourced cash signed"
+      ],
+      "scale": ">=0.4 intros per ask and >=70% intro->meeting by W5",
+      "change": "0.2-0.4 intros/ask: tighten targeting to alumni in brand-marketing roles; add sponsor-to-sponsor referrals",
+      "stop": "<0.2 intros per ask after 60 asks: redeploy alumni lead to renewals"
+    },
+    {
+      "id": "I5",
+      "rank": 5,
+      "name": "Creator & Community Referral Network",
+      "controls": [
+        "sources.creator_referral"
+      ],
+      "budget_inr": 30000,
+      "variable_cost": "8% finder fee on cash RECEIVED (paid only after receipt)",
+      "people": "1 community lead (50%)",
+      "person_weeks": 8,
+      "confidence": 0.5,
+      "weeks_to_first_cash": 6,
+      "timeline": "W3-W14",
+      "concept": "Recruit campus creators and community partners who already work with youth brands; pay a finder fee only on collected cash.",
+      "experiment": "Onboard 10 creators by W4; measure qualified brand referrals per creator.",
+      "kpis": [
+        "active creators",
+        "brand referrals per creator",
+        "referral -> meeting rate",
+        "finder fees vs cash collected"
+      ],
+      "scale": ">=1.5 qualified referrals per creator by W6",
+      "change": "0.75-1.5: narrow to creators with brand-deal history",
+      "stop": "<0.75 per creator by W6 or finder fees >12% of attributed cash"
+    }
+  ],
+  "deprioritised": [
+    {
+      "name": "Scale cold email / LinkedIn / revival",
+      "reason": "[CALCULATED] 148 brands touched in 2025 produced 0 confirmed partnerships at cutoff (1 confirmation later withdrew) and 7 opt-outs. Kept only as a 40-brand, meeting-gated ABM test."
+    },
+    {
+      "name": "Bet the plan on one title sponsor",
+      "reason": "No 2025 deal exceeded 200,000; one anchor deal would be a concentration risk with a long sales cycle. Anchor tier appears in stretch only, at expected value."
+    },
+    {
+      "name": "Chase the stale cold open pipeline",
+      "reason": "[CALCULATED] 26 open opportunities (1,440,000 face value) are all cold-originated; 25 have sat in their stage >14 days (median 43 days). One final 'close or disqualify' touch, then archive."
+    },
+    {
+      "name": "Paid ads for sponsor leads",
+      "reason": "No spend data exists to validate CAC; sponsorship buyers are a few hundred marketers reachable via warm paths."
+    }
+  ],
+  "targets": {
+    "label": "[CALCULATED] from this model; see outputs/model/forecast_summary.json"
+  }
+}
