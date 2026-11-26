@@ -1,0 +1,121 @@
+{
+  "engine": "formulas 1.3.4",
+  "checked": 19,
+  "passed": 19,
+  "results": [
+    {
+      "metric": "unique_attempts",
+      "formula_value": 369.0,
+      "python_value": 369.0,
+      "pass": true
+    },
+    {
+      "metric": "outbound_attempts",
+      "formula_value": 321.0,
+      "python_value": 321.0,
+      "pass": true
+    },
+    {
+      "metric": "meetings_held",
+      "formula_value": 60.0,
+      "python_value": 60.0,
+      "pass": true
+    },
+    {
+      "metric": "brands_unique_met",
+      "formula_value": 60.0,
+      "python_value": 60.0,
+      "pass": true
+    },
+    {
+      "metric": "brands_qualified",
+      "formula_value": 60.0,
+      "python_value": 60.0,
+      "pass": true
+    },
+    {
+      "metric": "brands_dormant",
+      "formula_value": 53.0,
+      "python_value": 53.0,
+      "pass": true
+    },
+    {
+      "metric": "brands_engaged",
+      "formula_value": 28.0,
+      "python_value": 28.0,
+      "pass": true
+    },
+    {
+      "metric": "opportunities",
+      "formula_value": 58.0,
+      "python_value": 58.0,
+      "pass": true
+    },
+    {
+      "metric": "confirmed_opportunities",
+      "formula_value": 24.0,
+      "python_value": 24.0,
+      "pass": true
+    },
+    {
+      "metric": "confirmed_cash_type_inr",
+      "formula_value": 2000000.0,
+      "python_value": 2000000.0,
+      "pass": true
+    },
+    {
+      "metric": "confirmed_in_kind_inr",
+      "formula_value": 240000.0,
+      "python_value": 240000.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_negotiating",
+      "formula_value": 8.0,
+      "python_value": 8.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_lost",
+      "formula_value": 7.0,
+      "python_value": 7.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_withdrawn",
+      "formula_value": 1.0,
+      "python_value": 1.0,
+      "pass": true
+    },
+    {
+      "metric": "open_pipeline_proposed_inr",
+      "formula_value": 1440000.0,
+      "python_value": 1440000.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_ever_reached_proposal_sent",
+      "formula_value": 46.0,
+      "python_value": 46.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_ever_reached_negotiating",
+      "formula_value": 39.0,
+      "python_value": 39.0,
+      "pass": true
+    },
+    {
+      "metric": "opps_ever_reached_partner_confirmed",
+      "formula_value": 25.0,
+      "python_value": 25.0,
+      "pass": true
+    },
+    {
+      "metric": "win_rate_closed",
+      "formula_value": 0.75,
+      "python_value": 0.75,
+      "pass": true
+    }
+  ]
+}
