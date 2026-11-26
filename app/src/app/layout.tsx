@@ -1,11 +1,12 @@
 import type { Metadata } from "next";
-import { Geist, Geist_Mono } from "next/font/google";
+import { Geist, Geist_Mono, Instrument_Serif } from "next/font/google";
 import "./globals.css";
 import { DashboardProvider } from "@/lib/client";
 import Shell from "@/components/Shell";
 
 const geistSans = Geist({ variable: "--font-geist-sans", subsets: ["latin"] });
 const geistMono = Geist_Mono({ variable: "--font-geist-mono", subsets: ["latin"] });
+const display = Instrument_Serif({ variable: "--font-display-serif", subsets: ["latin"], weight: "400" });
 
 export const metadata: Metadata = {
   title: "SponsorOS — Sponsorship Revenue-to-Cash OS",
@@ -15,7 +16,7 @@ export const metadata: Metadata = {
 export default function RootLayout({ children }: Readonly<{ children: React.ReactNode }>) {
   return (
     <html lang="en">
-      <body className={`${geistSans.variable} ${geistMono.variable} font-sans antialiased`}>
+      <body className={`${geistSans.variable} ${geistMono.variable} ${display.variable} font-sans antialiased`}>
         <DashboardProvider>
           <Shell>{children}</Shell>
         </DashboardProvider>

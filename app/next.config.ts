@@ -4,6 +4,7 @@ const nextConfig: NextConfig = {
   serverExternalPackages: ["@electric-sql/pglite"],
   outputFileTracingIncludes: { "/api/**": ["./data/**"] },
   poweredByHeader: false,
+  devIndicators: false,
   async headers() {
     return [{ source: "/:path*", headers: [
       { key: "X-Frame-Options", value: "DENY" },

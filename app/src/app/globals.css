@@ -1,39 +1,74 @@
 @import "tailwindcss";
 
+/* ───────────────────────── SponsorOS design tokens ─────────────────────────
+   "Cash ledger" identity: warm paper ground, deep-ink rail, one teal signal colour,
+   editorial serif for headline figures, mono for IDs and micro-labels. */
 @theme inline {
   --font-sans: var(--font-geist-sans), ui-sans-serif, system-ui, sans-serif;
   --font-mono: var(--font-geist-mono), ui-monospace, monospace;
-  --color-navy-950: #071426;
-  --color-navy-900: #0b1f3a;
-  --color-navy-800: #12294a;
-  --color-navy-700: #1e3a5f;
+  --font-display: var(--font-display-serif), ui-serif, Georgia, serif;
+
+  --color-paper: #f5f3ee;
+  --color-paper-2: #efece5;
+  --color-line: #e6e2d9;
+  --color-line-strong: #d8d3c7;
+  --color-ink: #141a26;
+  --color-ink-2: #3a4252;
+  --color-muted: #7a7f8c;
+  --color-rail: #0f1521;
+  --color-rail-2: #182030;
+
+  --color-navy-950: #0b111c;
+  --color-navy-900: #141a26;
+  --color-navy-800: #222b3d;
+  --color-navy-700: #2f3a50;
   --color-brand: #0d9488;
-  --color-brand-soft: #ccfbf1;
+  --color-brand-bright: #2dd4bf;
+  --color-brand-soft: #e3f4f1;
   --color-series-a: #6366f1; /* validated pair with brand teal (dataviz validator: all checks pass) */
+  --color-signal: #e8a33d;
 }
 
 :root { color-scheme: light; }
-body { background: #f6f8fb; color: #0f172a; }
+body { background: var(--color-paper); color: var(--color-ink); font-feature-settings: "ss01", "cv11"; }
+::selection { background: #99f6e4; color: #0b111c; }
+
+/* subtle ledger grid on the canvas */
+.canvas-grid {
+  background-image: linear-gradient(to right, rgba(20, 26, 38, 0.035) 1px, transparent 1px), linear-gradient(to bottom, rgba(20, 26, 38, 0.035) 1px, transparent 1px);
+  background-size: 28px 28px;
+}
 
 @layer components {
-  .card { @apply rounded-xl border border-slate-200 bg-white shadow-[0_1px_2px_rgba(15,23,42,0.04)]; }
-  .card-h { @apply flex items-center justify-between gap-3 border-b border-slate-100 px-5 py-3.5; }
-  .card-t { @apply text-[13px] font-semibold tracking-tight text-slate-900; }
-  .card-b { @apply p-5; }
-  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-lg border border-slate-200 bg-white px-3 py-1.5 text-[13px] font-medium text-slate-700 transition hover:border-slate-300 hover:bg-slate-50 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-primary { @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-navy-900 px-3 py-1.5 text-[13px] font-medium text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50; }
-  .btn-teal { @apply inline-flex items-center justify-center gap-1.5 rounded-lg bg-brand px-3 py-1.5 text-[13px] font-medium text-white transition hover:brightness-110 disabled:opacity-50; }
-  .btn-ghost { @apply inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12px] font-medium text-slate-600 hover:bg-slate-100; }
-  .input { @apply rounded-lg border border-slate-200 bg-white px-2.5 py-1.5 text-[13px] text-slate-900 outline-none transition placeholder:text-slate-400 focus:border-brand focus:ring-2 focus:ring-brand/15; }
-  .label { @apply mb-1 block text-[11px] font-semibold uppercase tracking-wide text-slate-500; }
-  .tbl { @apply w-full text-left text-[13px]; }
-  .tbl th { @apply sticky top-0 z-10 border-b border-slate-200 bg-slate-50/95 px-3 py-2 text-[11px] font-semibold uppercase tracking-wide text-slate-500; }
-  .tbl td { @apply border-b border-slate-100 px-3 py-2 align-top text-slate-700; }
-  .tbl tr:hover td { @apply bg-slate-50/70; }
-  .num { @apply tabular-nums; }
-  .tag { @apply inline-flex items-center gap-1 rounded-md px-1.5 py-0.5 text-[11px] font-semibold ring-1 ring-inset; }
+  .card { @apply rounded-[14px] border border-line bg-white; box-shadow: 0 1px 0 rgba(20, 26, 38, 0.03), 0 8px 24px -18px rgba(20, 26, 38, 0.18); }
+  .card-h { @apply flex items-start justify-between gap-3 px-4 pb-2 pt-3.5; }
+  .card-t { @apply text-[13px] font-semibold tracking-[-0.01em] text-ink; }
+  .card-b { @apply px-4 pb-4 pt-1; }
+
+  .btn { @apply inline-flex items-center justify-center gap-1.5 rounded-[9px] border border-line-strong bg-white px-3 py-1.5 text-[12.5px] font-medium text-ink-2 transition hover:border-ink/30 hover:text-ink disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-primary { @apply inline-flex items-center justify-center gap-1.5 rounded-[9px] bg-ink px-3 py-1.5 text-[12.5px] font-medium text-white transition hover:bg-navy-800 disabled:cursor-not-allowed disabled:opacity-50; }
+  .btn-teal { @apply inline-flex items-center justify-center gap-1.5 rounded-[9px] bg-brand px-3 py-1.5 text-[12.5px] font-semibold text-white shadow-[inset_0_-1px_0_rgba(0,0,0,0.15)] transition hover:brightness-110 disabled:opacity-50; }
+  .btn-ghost { @apply inline-flex items-center gap-1 rounded-md px-2 py-1 text-[12px] font-medium text-muted transition hover:bg-paper-2 hover:text-ink; }
+
+  .input { @apply rounded-[9px] border border-line-strong bg-white px-2.5 py-1.5 text-[12.5px] text-ink outline-none transition placeholder:text-muted/70 focus:border-brand focus:ring-[3px] focus:ring-brand/15; }
+  .label { @apply mb-1 block font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted; }
+  .kicker { @apply font-mono text-[10px] font-medium uppercase tracking-[0.12em] text-muted; }
+
+  .tbl { @apply w-full text-left text-[12.5px]; }
+  .tbl th { @apply sticky top-0 z-10 border-b border-line bg-paper/95 px-3 py-2 font-mono text-[10px] font-medium uppercase tracking-[0.08em] text-muted backdrop-blur; }
+  .tbl td { @apply border-b border-line/70 px-3 py-[7px] align-middle text-ink-2; }
+  .tbl tbody tr:last-child td { @apply border-b-0; }
+  .tbl tr:hover td { @apply bg-brand-soft/40; }
+  .num { @apply whitespace-nowrap tabular-nums; }
+  .id { @apply font-mono text-[10.5px] text-muted; }
+  .tag { @apply inline-flex items-center gap-1 whitespace-nowrap rounded-full px-2 py-[1px] text-[10.5px] font-semibold ring-1 ring-inset; }
+  .display { font-family: var(--font-display-serif), ui-serif, Georgia, serif; letter-spacing: -0.01em; font-weight: 400; }
 }
 
 .prose-chat p { margin: 0.25rem 0; }
 .prose-chat ul { margin: 0.25rem 0 0.25rem 1rem; list-style: disc; }
 .prose-chat li { margin: 0.15rem 0; }
+.prose-chat h3 { margin: 0.5rem 0 0.2rem; font-weight: 600; }
+
+/* thin, quiet scrollbars */
+* { scrollbar-width: thin; scrollbar-color: #cfc9bc transparent; }

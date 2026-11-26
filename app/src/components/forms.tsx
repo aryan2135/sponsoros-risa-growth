@@ -9,7 +9,7 @@ export function NewTaskInline({ defaults, onDone }: { defaults: Record<string, u
   const { data } = useDash(); const mutate = useMutate();
   const [f, setF] = useState({ title: String(defaults.title ?? ""), owner_id: String(defaults.owner_id ?? ""), due: "", priority: "medium" });
   return (
-    <form className="grid gap-2 rounded-lg border border-slate-200 p-3" onSubmit={async (e) => { e.preventDefault(); const r = await mutate("POST", "tasks", { ...defaults, title: f.title, owner_id: f.owner_id || null, due_at: f.due ? new Date(f.due + "T18:00:00+05:30").toISOString() : null, priority: f.priority }, "Task created"); if (r) onDone?.(); }}>
+    <form className="grid gap-2 rounded-lg border border-line p-3" onSubmit={async (e) => { e.preventDefault(); const r = await mutate("POST", "tasks", { ...defaults, title: f.title, owner_id: f.owner_id || null, due_at: f.due ? new Date(f.due + "T18:00:00+05:30").toISOString() : null, priority: f.priority }, "Task created"); if (r) onDone?.(); }}>
       <p className="label">New task</p>
       <input className="input" value={f.title} onChange={(e) => setF({ ...f, title: e.target.value })} placeholder="Task" aria-label="Task title" />
       <div className="grid grid-cols-3 gap-2">

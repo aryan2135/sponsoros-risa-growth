@@ -25,21 +25,21 @@ export default function DataPage() {
   if (!data) return <Loading />;
   const src = data.source;
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <PageHeader title="Data sources & assumptions" subtitle="Provenance, data-quality decisions, known gaps, editable operating assumptions, and the audit trail." />
       <div className="flex flex-wrap gap-2 text-[12px]"><LabelTag kind="SOURCE" /> original dataset fact <LabelTag kind="CALCULATED" /> derived transparently <LabelTag kind="ASSUMPTION" /> planning assumption <LabelTag kind="SIMULATION" /> model output <LabelTag kind="UNKNOWN" /> not established by data</div>
-      <div className="grid gap-5 xl:grid-cols-2">
+      <div className="grid items-start gap-4 xl:grid-cols-2">
         <Card title="Source import" subtitle="Raw rows are preserved unchanged in raw_records; app edits are separate, versioned and audited">
           {src && <div className="space-y-2 text-[13px]">
             <p><b>{src.file_name}</b> · imported {dt(src.imported_at, true)}</p>
-            <p className="font-mono text-[11px] break-all text-slate-500">SHA-256 {src.sha256}</p>
+            <p className="font-mono text-[11px] break-all text-muted">SHA-256 {src.sha256}</p>
             <table className="tbl"><thead><tr><th>Sheet</th><th>Rows read</th><th>Exact import retries removed</th></tr></thead>
               <tbody>{Object.entries(src.row_counts).map(([k, v]) => <tr key={k}><td>{k}</td><td className="num">{v}</td><td className="text-[12px]">{src.dedupe_log[k]?.length ? src.dedupe_log[k].join(", ") : "—"}</td></tr>)}</tbody></table>
-            <p className="text-[12px] text-slate-500">Import is idempotent (keyed by file SHA-256 and stable IDs). A repeated ID with a different payload would abort the import, never pick a version silently.</p>
+            <p className="text-[12px] text-muted">Import is idempotent (keyed by file SHA-256 and stable IDs). A repeated ID with a different payload would abort the import, never pick a version silently.</p>
           </div>}
         </Card>
         <Card title="Known data gaps" subtitle="The AI analyst checks these before answering">
-          <ul className="list-disc space-y-1.5 pl-5 text-[13px] text-slate-700">
+          <ul className="list-disc space-y-1.5 pl-5 text-[13px] text-ink-2">
             <li><LabelTag kind="UNKNOWN" /> <b>Historical cash received</b> — no receipts, invoices or payment dates in the source.</li>
             <li><LabelTag kind="UNKNOWN" /> <b>Campaign spend → CAC / ROI</b> — no budget or spend columns.</li>
             <li><b>Causality</b> — campaign attribution is observational (originating campaign at opportunity creation).</li>
@@ -68,23 +68,23 @@ export default function DataPage() {
           </form>
         </Card>
         <Card title="Readiness engine rules" subtitle="Transparent heuristic — not a trained probability">
-          {Object.entries(data.readiness_rules).map(([k, rules]) => <div key={k} className="mb-2"><p className="label">{k} track</p><ul className="list-disc pl-5 text-[12px] text-slate-600">{rules.map((r) => <li key={r}>{r}</li>)}</ul></div>)}
+          {Object.entries(data.readiness_rules).map(([k, rules]) => <div key={k} className="mb-2"><p className="label">{k} track</p><ul className="list-disc pl-5 text-[12px] text-ink-2">{rules.map((r) => <li key={r}>{r}</li>)}</ul></div>)}
         </Card>
         <Card title="Deprioritised / rejected ideas">
-          <ul className="space-y-2 text-[12px] text-slate-700">{a?.deprioritised.map((d) => <li key={d.name}><b>{d.name}.</b> {d.reason}</li>)}</ul>
+          <ul className="space-y-2 text-[12px] text-ink-2">{a?.deprioritised.map((d) => <li key={d.name}><b>{d.name}.</b> {d.reason}</li>)}</ul>
         </Card>
       </div>
       <Card title="Forecast model assumptions (next edition)" subtitle="model/assumptions.json — bau / base / stretch per source" bodyClass="p-0">
         <div className="overflow-x-auto"><table className="tbl"><thead><tr><th>Source</th><th>Init.</th><th>Prospects</th><th>→ Conversation</th><th>→ Proposal</th><th>→ Win</th><th>Avg deal</th><th className="min-w-[320px]">Basis</th></tr></thead>
-          <tbody>{a?.sources.map((x) => <tr key={x.id}><td className="font-medium">{x.name}</td><td>{x.initiative}</td>{(["prospects", "p_conversation", "p_proposal", "p_win"] as const).map((k) => <td key={k} className="num text-[12px]">{x[k].bau} / {x[k].base} / {x[k].stretch}</td>)}<td className="num text-[12px]">{inr(x.avg_deal_inr.bau, true)} / {inr(x.avg_deal_inr.base, true)} / {inr(x.avg_deal_inr.stretch, true)}</td><td className="text-[11px] text-slate-500">{x.basis}</td></tr>)}</tbody></table></div>
+          <tbody>{a?.sources.map((x) => <tr key={x.id}><td className="min-w-[200px] font-medium text-ink">{x.name} <span className="id">{x.id}</span></td><td>{x.initiative}</td>{(["prospects", "p_conversation", "p_proposal", "p_win"] as const).map((k) => <td key={k} className="num text-[12px]">{x[k].bau} / {x[k].base} / {x[k].stretch}</td>)}<td className="num text-[12px]">{inr(x.avg_deal_inr.bau, true)} / {inr(x.avg_deal_inr.base, true)} / {inr(x.avg_deal_inr.stretch, true)}</td><td className="text-[11px] text-muted">{x.basis}</td></tr>)}</tbody></table></div>
       </Card>
-      <div className="grid gap-5 xl:grid-cols-3">
+      <div className="grid items-start gap-4 xl:grid-cols-3">
         <Card className="xl:col-span-2" title="Audit trail (latest 100)" bodyClass="p-0">
-          <div className="max-h-80 overflow-auto"><table className="tbl"><thead><tr><th>When</th><th>Actor</th><th>Entity</th><th>Action</th></tr></thead><tbody>{auditLog.map((x) => <tr key={x.id}><td className="text-[12px]">{new Date(x.at).toLocaleString("en-IN")}</td><td>{x.actor}</td><td>{x.entity} {x.entity_id}</td><td>{x.action}</td></tr>)}</tbody></table></div>
+          <div className="max-h-80 overflow-auto"><table className="tbl"><thead><tr><th>When</th><th>Actor</th><th>Entity</th><th>Action</th></tr></thead><tbody>{!auditLog.length && <tr><td colSpan={4} className="py-4 text-center text-muted">No changes yet. Every write (UI or AI-confirmed) is logged here with before/after values.</td></tr>}{auditLog.map((x) => <tr key={x.id}><td className="text-[12px]">{new Date(x.at).toLocaleString("en-IN")}</td><td>{x.actor}</td><td>{x.entity} {x.entity_id}</td><td>{x.action}</td></tr>)}</tbody></table></div>
         </Card>
         <Card title="Reset demo data">
-          <p className="text-[12px] text-slate-600">Restores the operational layer to the imported workbook: removes app-created records, tasks, receipts, milestones, spend, scenarios and settings. Raw source rows are untouched.</p>
-          {!resetEnabled ? <p className="mt-3 text-[12px] font-medium text-slate-500">Disabled on this deployment (ALLOW_RESET is not &quot;true&quot;).</p> : !confirmReset ? <button className="btn mt-3 text-rose-700" onClick={() => setConfirmReset(true)}>Reset to source…</button> : <div className="mt-3 flex gap-2"><button className="btn-primary bg-rose-700" onClick={async () => { await mutate("POST", "admin/reset", {}, "Reset to source data"); setConfirmReset(false); }}>Confirm reset</button><button className="btn" onClick={() => setConfirmReset(false)}>Cancel</button></div>}
+          <p className="text-[12px] text-ink-2">Restores the operational layer to the imported workbook: removes app-created records, tasks, receipts, milestones, spend, scenarios and settings. Raw source rows are untouched.</p>
+          {!resetEnabled ? <p className="mt-3 text-[12px] font-medium text-muted">Disabled on this deployment (ALLOW_RESET is not &quot;true&quot;).</p> : !confirmReset ? <button className="btn mt-3 text-rose-700" onClick={() => setConfirmReset(true)}>Reset to source…</button> : <div className="mt-3 flex gap-2"><button className="btn-primary bg-rose-700" onClick={async () => { await mutate("POST", "admin/reset", {}, "Reset to source data"); setConfirmReset(false); }}>Confirm reset</button><button className="btn" onClick={() => setConfirmReset(false)}>Cancel</button></div>}
         </Card>
       </div>
     </div>

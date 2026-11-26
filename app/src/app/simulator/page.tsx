@@ -37,9 +37,9 @@ export default function Simulator() {
   const t = res?.totals;
   const wf = res?.waterfall.map((w, i) => ({ ...w, base: i === 0 ? 0 : Math.min(w.collected_inr, w.collected_inr - w.increment_inr), bar: Math.abs(w.increment_inr) })) ?? [];
   return (
-    <div className="space-y-5">
+    <div className="space-y-4">
       <PageHeader title="Scenario simulator" subtitle={<>Forward-looking model for the next edition, calibrated on 2025 data (assumptions in model/assumptions.json). <b>Scenarios never modify actual records.</b></>}
-        actions={<><div className="flex rounded-lg border border-slate-200 bg-white p-0.5">{(["base", "stretch"] as const).map((l) => <button key={l} className={`rounded-md px-3 py-1 text-[12px] font-medium capitalize ${level === l ? "bg-navy-900 text-white" : "text-slate-600"}`} onClick={() => { setLevel(l); setO({}); }}>{l}</button>)}</div><button className="btn" onClick={() => { setO({}); setDesk(true); }}>Reset levers</button></>} />
+        actions={<><div className="flex rounded-lg border border-line bg-white p-0.5">{(["base", "stretch"] as const).map((l) => <button key={l} className={`rounded-md px-3 py-1 text-[12px] font-medium capitalize ${level === l ? "bg-ink text-white" : "text-ink-2"}`} onClick={() => { setLevel(l); setO({}); }}>{l}</button>)}</div><button className="btn" onClick={() => { setO({}); setDesk(true); }}>Reset levers</button></>} />
       <div className="grid gap-3 sm:grid-cols-2 xl:grid-cols-5">
         <Stat label="Forecast cash collected pre-festival" value={inr(Number(t?.collected_inr ?? 0), true)} tag={<LabelTag kind="SIMULATION" />} sub={res && <>Plan default {inr(res.plan_default_collected_inr, true)} · Δ {inr(res.delta_vs_plan_inr, true)}</>} tone={res && res.delta_vs_plan_inr < 0 ? "warn" : "good"} />
         <Stat label="Committed value" value={inr(Number(t?.committed_inr ?? 0), true)} sub={<>Cash-type {inr(Number(t?.cash_type_inr ?? 0), true)} · in-kind {inr(Number(t?.in_kind_inr ?? 0), true)}</>} />
@@ -47,14 +47,14 @@ export default function Simulator() {
         <Stat label="Blended collection rate" value={pct(Number(t?.collection_rate ?? 0), 1)} sub={`Uncollected by festival ${inr(Number(t?.uncollected_by_festival_inr ?? 0), true)}`} />
         <Stat label="Incremental cash per ₹ budget" value={res?.cash_per_budget_rupee != null ? `₹${res.cash_per_budget_rupee.toFixed(0)}` : "—"} sub={res && `vs BAU ${inr(res.bau_collected_inr, true)} · budget ${inr(res.budget_inr, true)}`} />
       </div>
-      <div className="grid gap-5 xl:grid-cols-5">
+      <div className="grid gap-4 xl:grid-cols-5">
         <Card className="xl:col-span-2" title="Levers" subtitle="Applied on top of the selected plan level">
           <div className="space-y-3">
             {LEVERS.map((l) => { const v = Number(o[l.k] ?? (l.k === "closers" ? (level === "stretch" ? 6 : 5) : l.k === "withdrawal" ? (level === "stretch" ? 0.03 : 0.04) : l.k === "cash_share" ? (level === "stretch" ? 0.9 : 0.89) : l.k === "budget_inr" ? 215000 : l.k === "cold_prospects" ? 40 : l.def)); return (
               <div key={l.k}>
-                <div className="flex justify-between text-[12px]"><label htmlFor={l.k} className="font-medium text-slate-700">{l.label}</label><span className="num font-semibold">{l.fmt(v)}</span></div>
+                <div className="flex justify-between text-[12px]"><label htmlFor={l.k} className="font-medium text-ink-2">{l.label}</label><span className="num font-semibold">{l.fmt(v)}</span></div>
                 <input id={l.k} type="range" className="w-full accent-teal-600" min={l.min} max={l.max} step={l.step} value={v} onChange={(e) => setO({ ...o, [l.k]: Number(e.target.value) })} />
-                {l.help && <p className="text-[11px] text-slate-400">{l.help}</p>}
+                {l.help && <p className="text-[11px] text-muted">{l.help}</p>}
               </div>); })}
             <label className="flex items-center gap-2 text-[12px]"><input type="checkbox" checked={desk} onChange={(e) => setDesk(e.target.checked)} /> Cash Collection Desk (I1) active — off = 70% flat collection [ASSUMPTION]</label>
             <label className="flex items-center gap-2 text-[12px]"><input type="checkbox" checked={mc} onChange={(e) => setMc(e.target.checked)} /> Run Monte Carlo (2,000 runs) for an uncertainty band</label>
@@ -67,7 +67,7 @@ export default function Simulator() {
               <Tooltip formatter={(v: number, n: string, p: { payload?: { label: string; increment_inr: number; collected_inr: number } }) => (n === "bar" ? [`${inr(p.payload!.increment_inr)} → cumulative ${inr(p.payload!.collected_inr)}`, p.payload!.label] : [null, null])} cursor={{ fill: "#f1f5f9" }} />
               <RBar dataKey="base" stackId="w" fill="transparent" /><RBar dataKey="bar" stackId="w" radius={[4, 4, 0, 0]} maxBarSize={48}>{wf.map((w, i) => <Cell key={i} fill={i === 0 ? "#94a3b8" : w.increment_inr < 0 ? "#e11d48" : "#0d9488"} />)}<LabelList dataKey="increment_inr" position="top" formatter={(v: number) => inr(v, true)} style={{ fontSize: 10, fill: "#334155" }} /></RBar>
             </BarChart></ResponsiveContainer></div>
-            <p className="text-[11px] text-slate-500">BAU = repeat 2025 playbook at risk-adjusted rates. Grey = BAU base, teal = increase, red = decrease.</p>
+            <p className="text-[11px] text-muted">BAU = repeat 2025 playbook at risk-adjusted rates. Grey = BAU base, teal = increase, red = decrease.</p>
           </Card>
           {res?.monte_carlo && <Card title="Uncertainty band (Monte Carlo)" subtitle="Beta-distributed rates, binomial deal counts, 2025 deal-size shape, per-deal withdrawal & collection"><div className="grid grid-cols-4 gap-3 text-center">{(["p10", "p50", "p90", "mean"] as const).map((k) => <div key={k}><p className="label">{k.toUpperCase()}</p><p className="num text-[18px] font-semibold">{inr(res.monte_carlo![k], true)}</p></div>)}</div></Card>}
           <Card title="By source" bodyClass="p-0">
