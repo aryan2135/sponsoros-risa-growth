@@ -45,7 +45,7 @@ function LineDrawer({ l, onClose }: { l: Line; onClose: () => void }) {
         <div>
           <p className="label">Receipts</p>
           {receipts.length ? <ul className="space-y-1 text-[12px]">{receipts.map((x) => <li key={x.id} className="flex items-center justify-between gap-2"><span>{inr(x.amount_inr)} · {dt(x.received_at)} · ref {x.reference} {x.is_test && <Tag tone="indigo">TEST</Tag>} {x.verified ? <Tag tone="green">verified</Tag> : <Tag tone="amber">unverified</Tag>}</span>{!x.verified && <button className="btn-ghost" onClick={() => mutate("PATCH", `cash/receipts/${x.id}`, { verified: true }, "Receipt verified")}>Verify</button>}</li>)}</ul> : <p className="text-slate-500">No receipts recorded.</p>}
-          <form className="mt-2 grid gap-2 rounded-lg border border-slate-200 p-3" onSubmit={(e) => { e.preventDefault(); mutate("POST", "cash/receipts", { opportunity_id: l.opportunity_id, amount_inr: Number(r.amount), milestone_id: r.milestone_id ? Number(r.milestone_id) : null, reference: r.reference, received_at: fromLocalInput(r.received), verified: r.verified, is_test: r.is_test, note: r.note || undefined }, r.is_test ? "Test receipt recorded (excluded from cash totals)" : "Receipt recorded"); }}>
+          <form className="mt-2 grid gap-2 rounded-lg border border-slate-200 p-3" onSubmit={async (e) => { e.preventDefault(); const ok = await mutate("POST", "cash/receipts", { opportunity_id: l.opportunity_id, amount_inr: Number(r.amount), milestone_id: r.milestone_id ? Number(r.milestone_id) : null, reference: r.reference, received_at: fromLocalInput(r.received), verified: r.verified, is_test: r.is_test, note: r.note || undefined }, r.is_test ? "Test receipt recorded (excluded from cash totals)" : "Receipt recorded"); if (ok) setR((x) => ({ ...x, amount: "", reference: "", note: "" })); }}>
             <p className="label">Record receipt (from bank evidence)</p>
             <div className="grid grid-cols-3 gap-2">
               <Field label="Amount"><input className="input w-full num" type="number" min={1} required value={r.amount} onChange={(e) => setR({ ...r, amount: e.target.value })} /></Field>
@@ -120,7 +120,7 @@ export default function CashPage() {
             </tr>))}</tbody></table></div>
         {c.orphan_receipts.length > 0 && <p className="px-5 py-2 text-[12px] text-amber-700">⚠ {c.orphan_receipts.length} verified receipt(s) belong to opportunities that are no longer confirmed cash deals. Review them; they are not hidden.</p>}
       </Card>
-      {(() => { const l = c.lines.find((x) => x.opportunity_id === sel); return l ? <LineDrawer key={l.opportunity_id + l.milestones.length + l.receipts.length} l={l} onClose={() => setSel(null)} /> : null; })()}
+      {(() => { const l = c.lines.find((x) => x.opportunity_id === sel); return l ? <LineDrawer key={l.opportunity_id} l={l} onClose={() => setSel(null)} /> : null; })()}
     </div>
   );
 }

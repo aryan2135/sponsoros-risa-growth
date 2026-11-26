@@ -45,6 +45,8 @@ test.describe.serial("SponsorOS end-to-end", () => {
     await page.getByLabel("Bank ref / UTR").fill("E2E-TEST-001");
     await page.getByRole("button", { name: "Record receipt" }).click();
     await expect(page.getByText("Test receipt recorded (excluded from cash totals)")).toBeVisible();
+    await expect(page.getByText(/ref E2E-TEST-001/)).toBeVisible();
+    await expect(page.getByLabel("Bank ref / UTR")).toHaveValue("");
     await page.getByLabel("Amount", { exact: true }).fill("75000");
     await page.getByLabel("Bank ref / UTR").fill("E2E-DEMO-UTR-002");
     await page.getByText("Verified against bank statement").click();

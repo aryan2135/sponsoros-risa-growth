@@ -68,3 +68,12 @@ Fresh database and its own server on port 3200, no API key (deterministic analys
 
 ## 6. Manual / API checks
 `curl` against the dev server: `/api/health` → `{"db":"pglite","ai_provider":"local"}`; `/api/dashboard` returns the parity figures (369 attempts, ₹20,00,000 confirmed cash, ₹0 received, forecast ₹17,40,000 at the pre-festival clock).
+
+## 7. Defects found by testing and fixed
+| Defect | Found by | Fix |
+|---|---|---|
+| Waterfall threshold min-sample (20 brands) excluded every warm campaign from judgement | integration test | campaign-rule min sample set to 8 brands |
+| "confirmed cash-type" questions were routed to the collection answer | AI test | commitment intent routed before the cash intent |
+| I3 KPI read "STOP" while it measured the backlog the initiative exists to clear | screenshot review | KPI changed to qualified-brand opportunity coverage (higher is better) |
+| Cash drawer remounted after each receipt and wiped what the user was typing | e2e test 4 (intermittent failure) | drawer keyed by deal only; form cleared explicitly after a successful save. Re-run: 8/8 |
+| Slide 1 waterfall bars mis-scaled (undefined max) | visual QA of the PowerPoint render | max computed from step values |
