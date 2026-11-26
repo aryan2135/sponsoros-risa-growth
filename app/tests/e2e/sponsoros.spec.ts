@@ -4,6 +4,9 @@ const shot = (page: Page, name: string) => page.screenshot({ path: `../docs/scre
 
 test.describe.serial("SponsorOS end-to-end", () => {
   test("overview answers the five questions from live data", async ({ page }) => {
+    // safety: e2e must run on a throwaway PGlite DB with the deterministic analyst, never on Supabase / a live LLM
+    const h = await (await page.request.get("/api/health")).json();
+    expect(h).toMatchObject({ db: "pglite", ai_provider: "local" });
     await page.goto("/");
     await expect(page.getByText("1 · Cash actually received")).toBeVisible();
     await expect(page.getByText("Cash collected in the 2025 source data is unknown")).toBeVisible();

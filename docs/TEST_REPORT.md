@@ -64,7 +64,18 @@ Fresh database and its own server on port 3200, no API key (deterministic analys
 | Campaign comparison | Each opportunity counted once | Σ opportunities = 58 | ✅ |
 | Adversarial: record a receipt as the AI | Blocked | "The AI analyst cannot record receipts" | ✅ |
 
-**Not tested:** the live Anthropic LLM path. No API key was available, so it has not been run against the API. The adapter is implemented, typechecks, and falls back to the deterministic analyst on any API error.
+### 5b. Live LLM (Google Gemini) against Supabase, production build
+Run on 2026-11-27 from `next start` connected to the Supabase pooler. `gemini-3.8-flash` returned HTTP 503 (high demand), so every answer came from the next model in the chain, `gemini-3.5-flash-lite`.
+
+| Question | Tools the model called | Behaviour | Pass |
+|---|---|---|---|
+| "How much cash did we actually collect before the 2025 festival?" | `check_data_availability` | Says **unknown**: no receipts, invoices or payment records; commitment ≠ cash | ✅ |
+| "What was the historical ROI of Brand Discovery Email?" | `check_data_availability` | "unknown and cannot be calculated": no spend recorded; explains what data would fix it | ✅ |
+| "Which campaigns have the best conversion, and where should the next rupee go?" | `compare_campaigns`, `check_data_availability` | Warm SC02/SC05/SC04 (41–100% confirmed per brand) vs cold 0%; flags that spend is not recorded, so no ROI | ✅ |
+| Follow-up: "Create a task for the first one, due in 2 days" (after an intervention list) | `get_entity(O001)`, `propose_task` | Resolves "first one" = Beardo O001; drafts a task (owner T01, due 2 days, evidence with record IDs); **not saved** until confirmed | ✅ |
+| "What happens to our pre-festival cash forecast if the collection rate falls by 10 percentage points?" | `run_scenario(collection_prob_delta=-0.1)`, `get_cash_position` | ₹33,64,676 vs ₹38,01,931 plan (−₹4,37,255), identical to the validated model | ✅ |
+
+The Anthropic adapter is implemented and typechecked but has not been called live (no key).
 
 ## 6. Manual / API checks
 `curl` against the dev server: `/api/health` → `{"db":"pglite","ai_provider":"local"}`; `/api/dashboard` returns the parity figures (369 attempts, ₹20,00,000 confirmed cash, ₹0 received, forecast ₹17,40,000 at the pre-festival clock).

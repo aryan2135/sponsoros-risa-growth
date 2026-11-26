@@ -3,6 +3,7 @@ import Anthropic from "@anthropic-ai/sdk";
 import type { Db } from "../db/client";
 import { buildCtx, runTool, TOOL_SCHEMAS } from "./tools";
 import { localAnalyst } from "./local";
+import { askGemini } from "./gemini";
 
 export interface ChatTurn { role: "user" | "assistant"; content: string }
 export interface ToolTrace { name: string; input: unknown; summary: string }
@@ -29,14 +30,27 @@ function summarise(result: unknown): string {
   return s.length > 220 ? s.slice(0, 220) + "…" : s;
 }
 
-export function providerName(): "anthropic" | "local" {
-  return process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN ? "anthropic" : "local";
+export function providerName(): "anthropic" | "gemini" | "local" {
+  if (process.env.AI_PROVIDER === "local") return "local";
+  if (process.env.ANTHROPIC_API_KEY || process.env.ANTHROPIC_AUTH_TOKEN) return "anthropic";
+  if (process.env.GEMINI_API_KEY) return "gemini";
+  return "local";
 }
 
 export async function askAnalyst(db: Db, history: ChatTurn[], opts: { forceLocal?: boolean } = {}): Promise<AnalystReply> {
   const ctx = await buildCtx(db);
   const asOf = new Date(ctx.asOf).toISOString();
   if (opts.forceLocal || providerName() === "local") return { ...(await localAnalyst(ctx, history)), as_of: asOf };
+  if (providerName() === "gemini") {
+    try { return { ...(await askGemini(ctx, history, SYSTEM_PROMPT)), as_of: asOf }; }
+    catch (e) {
+      console.error(e);
+      const local = await localAnalyst(ctx, history);
+      return { ...local, text: `⚠ The Gemini API is unavailable right now (${(e as Error).message.slice(0, 160)}). Falling back to the deterministic analyst.
+
+${local.text}`, as_of: asOf };
+    }
+  }
 
   const client = new Anthropic();
   const model = process.env.ANTHROPIC_MODEL ?? "claude-opus-5-5";

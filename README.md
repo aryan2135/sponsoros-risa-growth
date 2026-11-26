@@ -7,7 +7,7 @@
 | Deliverable | Where |
 |---|---|
 | 3-slide strategy (PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf), [deliverables/RISA_Growth_Strategy.pptx](deliverables/RISA_Growth_Strategy.pptx) |
-| Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · run locally (below). **No public URL yet**: see [Deployment](#24-deployment) |
+| Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · Supabase Postgres + Google Gemini · deploy with [render.yaml](render.yaml), see [Deployment](#24-deployment) |
 | Historical audit (Gate 1) | [outputs/audit/](outputs/audit/): workbook, PDF/DOCX report, CSVs |
 | Financial model | [model/assumptions.json](model/assumptions.json), [analysis/financial_model.py](analysis/financial_model.py), [outputs/model/](outputs/model/) |
 | External research | [docs/research/EXTERNAL_EVIDENCE.md](docs/research/EXTERNAL_EVIDENCE.md) |
@@ -208,7 +208,7 @@ Every module reads and writes the same database:
 ## 16. AI architecture
 
 - **Controlled query layer** (`lib/ai/tools.ts`): `get_overview`, `get_funnel`, `compare_campaigns`, `list_opportunities`, `get_entity`, `get_cash_position`, `get_readiness_queue`, `get_threshold_signals`, `get_initiatives_plan`, `run_scenario`, `get_tasks`, `get_breakdown`, `check_data_availability`, `propose_task`. The model has **no SQL and no write access**. Every result is recomputed from the live database and carries `as_of`, definitions and record IDs.
-- **LLM path** (`lib/ai/analyst.ts`): Anthropic Messages API manual tool loop on `claude-opus-5-5` (override with `ANTHROPIC_MODEL`), `effort: medium`, with server-side refusal fallbacks enabled (`fallbacks: "default"`). The system prompt enforces grounding, re-querying on every question, commitment ≠ cash, in-kind ≠ cash, unknown ≠ zero, and no claims of causality.
+- **LLM path:** the provider is chosen from the environment. **Google Gemini** (`lib/ai/gemini.ts`, the deployed configuration) runs a REST `generateContent` function-calling loop and tries a chain of models in order: `gemini-3.8-flash` → `gemini-3.5-flash-lite` → `gemini-3.1-flash-lite` → `gemini-flash-lite-latest`, because free-tier capacity varies. Model turns are kept verbatim, since Gemini 3 thought signatures must be echoed back. **Anthropic** (`lib/ai/analyst.ts`) runs a Messages API tool loop on `claude-opus-5-5` with server-side refusal fallbacks and is used when `ANTHROPIC_API_KEY` is set. Both use the same system prompt, which enforces grounding, re-querying on every question, commitment ≠ cash, in-kind ≠ cash, unknown ≠ zero, and no claims of causality. If the provider fails, the deterministic analyst answers and says so.
 - **Deterministic analyst** (`lib/ai/local.ts`): used when no key is configured, or as an outage fallback. It routes intents to the same tools, handles follow-ups by resolving the entity from earlier turns, parses what-if questions, and drafts tasks. **It is not an LLM**, and every answer says so.
 - **Execution with consent:** `propose_task` returns a draft. The UI shows an editable card; **Confirm** calls `/api/recommendations/decide`, which validates, saves the recommendation and task in one transaction, and logs the decision. **Reject** records the decision only. The AI actor is blocked from recording receipts.
 - **Transparency:** each answer has a "Data used" drawer listing the exact tool calls and inputs.
@@ -235,9 +235,11 @@ npm run dev            # http://localhost:3000 — creates .data/pglite and impo
 
 | Var | Purpose | Default |
 |---|---|---|
-| `ANTHROPIC_API_KEY` | enables the live LLM analyst | unset → deterministic analyst |
-| `ANTHROPIC_MODEL` | model override | `claude-opus-5-5` |
-| `DATABASE_URL` | Postgres/Supabase connection string (use the pooled URI) | unset → embedded PGlite |
+| `GEMINI_API_KEY` | live LLM analyst via Google Gemini (AI Studio key) | unset → deterministic analyst |
+| `GEMINI_MODEL` | comma-separated model fallback chain | `gemini-3.8-flash,gemini-3.5-flash-lite,gemini-3.1-flash-lite,gemini-flash-lite-latest` |
+| `ANTHROPIC_API_KEY` / `ANTHROPIC_MODEL` | alternative LLM provider (takes precedence if set) | `claude-opus-5-5` |
+| `AI_PROVIDER` | `local` forces the deterministic analyst | auto |
+| `DATABASE_URL` | Supabase Postgres: the **IPv4 pooler** URI (port 6543), with the password URL-encoded | unset → embedded PGlite |
 | `PGLITE_DIR` | PGlite data directory | `app/.data/pglite` |
 | `APP_PASSWORD` | shared password gate | unset → open |
 | `ALLOW_RESET` | `false` disables `/api/admin/reset` | enabled |
@@ -279,13 +281,17 @@ The full report is in [docs/TEST_REPORT.md](docs/TEST_REPORT.md). Summary:
 
 ## 24. Deployment
 
-**Not deployed. No public URL exists yet.** There were no Supabase or Vercel credentials in this environment, and deploying under your accounts needs your authorisation. Steps once those exist:
+**Database: done.** The Supabase project (Tokyo, `ap-northeast-1`) is migrated and loaded with the 2025 data through the IPv4 transaction pooler. The direct `db.<ref>.supabase.co` host is IPv6-only and unreachable from most hosts. Verified from a production build against Supabase: migrate, import, reads, writes, reset, and the live Gemini analyst. All figures match local.
 
-1. Supabase: create a project and copy the pooled connection string.
-2. Vercel: import the repo, set the root directory to `app/`, and set `DATABASE_URL`, `APP_PASSWORD`, optionally `ANTHROPIC_API_KEY`, and `ALLOW_RESET`.
-3. Deploy. The first request migrates and imports. `outputFileTracingIncludes` already bundles `app/data/*.json`.
+**App on Render (Blueprint in [render.yaml](render.yaml)):**
+1. Push this repo to GitHub.
+2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml`: a web service in Singapore (the nearest region to the Tokyo database), root `app/`, build `npm ci --include=dev && npm run build`, start `npm run start`, health check `/api/health`.
+3. When prompted, enter the secrets `DATABASE_URL` (pooler URI, e.g. `postgresql://postgres.<ref>:<url-encoded-password>@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres`) and `GEMINI_API_KEY`.
+4. Deploy, then open `/api/health`. It should show `{"db":"postgres","ai_provider":"gemini"}`.
 
-PGlite on Vercel is **not** persistent (serverless filesystems are ephemeral), so a hosted demo must use `DATABASE_URL`.
+Render's free plan sleeps after inactivity, so the first request after a sleep can take about a minute. Never put the connection string in a `NEXT_PUBLIC_*` variable: those are shipped to the browser. `app/vercel.json` (pinned to `hnd1`) is also included if you prefer Vercel; the same environment variables apply.
+
+**Performance:** the whole state is fetched in one SQL round trip (a JSON aggregate per table), so a dashboard request from India to Tokyo takes about 0.5 s with a warm connection.
 
 ## 25. Known limitations
 
@@ -295,7 +301,7 @@ The full list is in [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md). The 
 - The forecast is an expected-value planning model calibrated on synthetic data with explicit haircuts. It is not validated against real collections.
 - The readiness score is a heuristic.
 - Campaign attribution is observational.
-- The deterministic analyst covers common intents. Free-form reasoning needs the LLM path, which **was not exercised live here because no API key was available**. The integration is implemented and typechecked, but no live call has been run.
+- The live analyst runs on Gemini's free tier. When every model in the chain is overloaded (HTTP 503/429), it falls back to the deterministic analyst and says so. The Anthropic adapter is implemented and typechecked, but no live call has been run because no key was available.
 - Single shared login; no per-user roles or RLS.
 
 ## 26. Future improvements

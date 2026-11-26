@@ -1,7 +1,7 @@
 import { defineConfig } from "@playwright/test";
 
 // e2e runs its own dev server on port 3200 against a fresh, throwaway PGlite database,
-// with AI keys blanked so the deterministic analyst path is exercised reproducibly.
+// with DATABASE_URL and AI keys blanked (never touches Supabase or a live LLM) so the deterministic analyst path is exercised reproducibly.
 export default defineConfig({
   testDir: "tests/e2e",
   timeout: 120_000,
@@ -14,6 +14,6 @@ export default defineConfig({
     url: "http://localhost:3200/api/health",
     timeout: 240_000,
     reuseExistingServer: false,
-    env: { PGLITE_DIR: `.data/e2e-${Date.now()}`, ANTHROPIC_API_KEY: "", ANTHROPIC_AUTH_TOKEN: "" },
+    env: { PGLITE_DIR: `.data/e2e-${Date.now()}`, DATABASE_URL: "", ANTHROPIC_API_KEY: "", ANTHROPIC_AUTH_TOKEN: "", GEMINI_API_KEY: "", AI_PROVIDER: "local" },
   },
 });

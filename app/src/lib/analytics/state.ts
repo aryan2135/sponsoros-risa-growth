@@ -36,7 +36,13 @@ export async function loadState(db: Db): Promise<State> {
   // fire every read concurrently (pool) — memoised so each SQL string runs once
   const pending = new Map<string, Promise<Record<string, unknown>[]>>();
   const q = (sql: string) => { if (!pending.has(sql)) pending.set(sql, db.query<Record<string, unknown>>(sql)); return pending.get(sql)!; };
-  void PREFETCH; // concurrent prefetch disabled: it hangs through the Supabase transaction pooler with postgres.js
+  // One round trip: every read is wrapped as a json_agg sub-select of a single statement
+  // (concurrent queries hang through the Supabase transaction pooler; sequential ones cost 20 RTTs).
+  const combo = (await db.query<Record<string, unknown>>(`SELECT ${PREFETCH.map((sql, i) => `(SELECT coalesce(json_agg(x), '[]'::json) FROM (${sql}) x) AS k${i}`).join(", ")}`))[0];
+  PREFETCH.forEach((sql, i) => {
+    const v = combo[`k${i}`];
+    pending.set(sql, Promise.resolve((typeof v === "string" ? JSON.parse(v) : v) as Record<string, unknown>[]));
+  });
   const [ev] = await q(`SELECT * FROM event WHERE id = 1`);
   const team = Object.fromEntries((await q(`SELECT id, name FROM team_members`)).map((r) => [String(r.id), String(r.name)]));
   const [src] = await q(`SELECT * FROM source_imports ORDER BY id DESC LIMIT 1`);
