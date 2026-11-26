@@ -1,0 +1,10 @@
+node_modules/
+.next/
+.data/
+.env
+.env.local
+*.log
+__pycache__/
+analysis/raw_csv/
+app/test-results/
+app/playwright-report/

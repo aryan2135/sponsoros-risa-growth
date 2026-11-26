@@ -1,0 +1,74 @@
+check,result,count,detail
+Brands: rows read,info,180,
+Brands: exact duplicate rows (import retries) removed,info,0,
+Brands: same ID with conflicting payload,PASS,0,
+Brands: unique brand_id after dedupe,PASS,180,
+Sponsor contacts: rows read,info,270,
+Sponsor contacts: exact duplicate rows (import retries) removed,info,0,
+Sponsor contacts: same ID with conflicting payload,PASS,0,
+Sponsor contacts: unique contact_id after dedupe,PASS,270,
+Sponsor campaigns: rows read,info,6,
+Sponsor campaigns: exact duplicate rows (import retries) removed,info,0,
+Sponsor campaigns: same ID with conflicting payload,PASS,0,
+Sponsor campaigns: unique sponsor_campaign_id after dedupe,PASS,6,
+Sponsor interactions: rows read,info,953,
+Sponsor interactions: exact duplicate rows (import retries) removed,info,3,"SI00001, SI00019, SI00110"
+Sponsor interactions: same ID with conflicting payload,PASS,0,
+Sponsor interactions: unique interaction_id after dedupe,PASS,950,
+Brand qualification: rows read,info,434,
+Brand qualification: exact duplicate rows (import retries) removed,info,1,BQ0003
+Brand qualification: same ID with conflicting payload,PASS,0,
+Brand qualification: unique history_id after dedupe,PASS,433,
+Partner opportunities: rows read,info,58,
+Partner opportunities: exact duplicate rows (import retries) removed,info,0,
+Partner opportunities: same ID with conflicting payload,PASS,0,
+Partner opportunities: unique opportunity_id after dedupe,PASS,58,
+Opportunity history: rows read,info,230,
+Opportunity history: exact duplicate rows (import retries) removed,info,2,"OH00001, OH00015"
+Opportunity history: same ID with conflicting payload,PASS,0,
+Opportunity history: unique history_id after dedupe,PASS,228,
+Sponsor activations: rows read,info,3,
+Sponsor activations: exact duplicate rows (import retries) removed,info,0,
+Sponsor activations: same ID with conflicting payload,PASS,0,
+Sponsor activations: unique activation_id after dedupe,PASS,3,
+FK contacts.brand_id -> brand_id,PASS,0,
+FK interactions.brand_id -> brand_id,PASS,0,
+FK interactions.contact_id -> contact_id,PASS,0,
+FK interactions.sponsor_campaign_id -> sponsor_campaign_id,PASS,0,
+FK qualification.brand_id -> brand_id,PASS,0,
+FK opportunities.brand_id -> brand_id,PASS,0,
+FK opportunities.primary_contact_id -> contact_id,PASS,0,
+FK opportunities.sponsor_campaign_id -> sponsor_campaign_id,PASS,0,
+FK opp_history.opportunity_id -> opportunity_id,PASS,0,
+FK activations.opportunity_id -> opportunity_id,PASS,0,
+Interaction contact belongs to same brand,PASS,0,
+Opportunity history brand = opportunity brand,PASS,0,
+origin_interaction_id resolves to an interaction,PASS,0,
+Follow-on events share root attempt_id,PASS,0,
+Exactly one root event per attempt,PASS,0,
+Root event types,info,370,"{'outreach_sent': 322, 'introduction_received': 30, 'web_inbound': 18}"
+Opportunity history: ambiguous same-timestamp versions,PASS,0,
+Brand qualification: ambiguous same-timestamp versions,PASS,0,
+confirmed_value_inr = 0 unless stage partner_confirmed,PASS,0,
+Confirmed value differs from proposed value (confirmed rows),info,0,all confirmed versions carry confirmed = proposed
+Opportunity history begins before opportunity created_at,PASS,0,
+Receipt / payment / invoice records present in source,LIMITATION,0,"No sheet records bank receipts, invoices or payment dates. Historical cash collected is UNKNOWN."
+Campaign spend records present in source,LIMITATION,0,Sponsor campaigns sheet has no budget or spend columns. Historical CAC/ROI cannot be calculated.
+Campaign reconciliation: Σ campaign confirmed = total confirmed opps,PASS,24,
+Campaign reconciliation: Σ campaign attempts = unique attempts,PASS,369,
+Campaign reconciliation: Σ originated opps = opportunities,PASS,58,
+Anomaly: confirmed_then_withdrawn,INVESTIGATE,1,O006
+Anomaly: no_meeting_held_for_brand,INVESTIGATE,15,"O030, O031, O034, O035, O036, O040, O041, O044, O045, O046, O050, O051, O054, O055, O056"
+Anomaly: brand_never_qualified,INVESTIGATE,15,"O030, O031, O034, O035, O036, O040, O041, O044, O045, O046, O050, O051, O054, O055, O056"
+Anomaly: opportunity_created_before_brand_qualified,INVESTIGATE,1,O001
+Anomaly: multiple_opportunities_for_brand,INVESTIGATE,2,"O001, O002"
+Anomaly: proposed_value_changed,INVESTIGATE,12,"O029, O033, O034, O038, O039, O043, O044, O048, O049, O053, O054, O058"
+Anomaly: confirmed opp whose brand's latest qualification is not 'qualified',PASS,0,
+Opportunity stage changes between pre-festival and history-end,info,0,
+Anomaly: brands latest 'qualified' with no opportunity (pre-festival),INVESTIGATE,18,"A060, A138, A144, A150, A151, A153, A154, A157, A158, A159, A161, A162, A163, A166, A167, A169, A172, A177"
+Opt-out brands that also have an opportunity,PASS,0,
+Synthetic pattern: confirmed brands by name prefix,info,24,"{'Aster': 10, 'Bramble': 9, 'Beardo': 1, 'Juniper': 1, 'Mosaic': 1, 'Harbor': 1, 'Maple': 1}"
+Synthetic pattern: confirmed opportunities whose path skipped no stage,info,24,every confirmed deal passed through all four stages in order
+Leakage: pre-festival snapshot contains post-cutoff records,PASS,0,
+Records after pre-festival cutoff excluded (interactions),info,2,"SI00602, SI00601"
+Records after pre-festival cutoff excluded (qualification versions),info,10,{'dormant': 10}

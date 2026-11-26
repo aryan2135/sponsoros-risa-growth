@@ -1,0 +1,7 @@
+sponsor_campaign_id,campaign_name,channel,owner,attempts,brands_touched,delivered,brands_replied,brands_positive,meetings_held,opt_outs,brands_latest_qualified_by_source,opportunities_originated,confirmed,confirmed_cash_type_inr,confirmed_in_kind_inr,open_pipeline_inr,lost_or_withdrawn,meeting_rate_per_brand,confirmed_per_brand_touched,spend_inr,roi
+SC01,Brand Discovery Email,email,Kabir Shah,223,91,223,34,14,7,7,7,11,0,0,0,490000,2,0.0769,0.0,UNKNOWN (no spend data),NOT CALCULABLE
+SC02,Warm Partner Introductions,introduction,Riya Kapoor,9,8,0,8,8,8,0,8,9,8,640000,145000,0,1,1.0,1.0,UNKNOWN (no spend data),NOT CALCULABLE
+SC03,Brand Leader LinkedIn,linkedin,Riya Kapoor,54,37,54,30,13,10,0,10,12,0,0,0,530000,3,0.2703,0.0,UNKNOWN (no spend data),NOT CALCULABLE
+SC04,Partner Interest Form,web_inbound,Kabir Shah,18,17,0,17,14,13,0,13,7,7,635000,35000,0,0,0.7647,0.4118,UNKNOWN (no spend data),NOT CALCULABLE
+SC05,Creator Network Referrals,introduction,Nisha Rao,21,19,0,19,17,15,0,15,9,9,725000,60000,0,0,0.7895,0.4737,UNKNOWN (no spend data),NOT CALCULABLE
+SC06,Past Conversation Revival,email,Kabir Shah,44,20,44,10,8,7,0,7,10,0,0,0,420000,2,0.35,0.0,UNKNOWN (no spend data),NOT CALCULABLE

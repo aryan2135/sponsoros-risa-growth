@@ -1,0 +1,527 @@
+{
+  "base": {
+    "totals": {
+      "capacity_proposals": 100,
+      "proposal_demand": 85.26,
+      "proposals": 85.26,
+      "capacity_binding": false,
+      "prospects": 190.0,
+      "conversations": 123.2,
+      "signed": 43.692,
+      "committed_inr": 4768147.5,
+      "cash_type_inr": 4243651.275,
+      "in_kind_inr": 524496.225,
+      "withdrawal_loss_inr": 169746.05100000015,
+      "net_cash_inr": 4073905.224,
+      "upsell_net_cash_inr": 298643.55840000004,
+      "collection_rate": 0.8695,
+      "collected_inr": 3801931.1662968,
+      "uncollected_by_festival_inr": 570617.6161031998
+    },
+    "monte_carlo": {
+      "p10": 2780725.0,
+      "p50": 3759750.0,
+      "p90": 4819050.0,
+      "mean": 3786346.8,
+      "signed_p10": 34.0,
+      "signed_p90": 54.0,
+      "p_reach_expected": 0.4776,
+      "p_reach_base_target": 0.4776,
+      "p_reach_2025_cash_type": 0.9941
+    },
+    "bau_collected_inr": 940102.36488,
+    "by_source": [
+      {
+        "id": "renewal",
+        "name": "2025 sponsor renewals",
+        "initiative": "I2",
+        "prospects": 24,
+        "conversations": 21.6,
+        "proposal_demand": 18.36,
+        "proposals": 18.36,
+        "signed": 10.098,
+        "committed_inr": 1262250.0,
+        "cash_type_inr": 1123402.5,
+        "in_kind_inr": 138847.5,
+        "net_cash_inr": 1078466.4,
+        "upsell_net_cash_inr": 69021.8496,
+        "collected_inr": 997741.0330272
+      },
+      {
+        "id": "qualified_recovery",
+        "name": "Qualified-but-unpitched 2025 brands",
+        "initiative": "I3",
+        "prospects": 18,
+        "conversations": 12.6,
+        "proposal_demand": 9.45,
+        "proposals": 9.45,
+        "signed": 4.2524999999999995,
+        "committed_inr": 403987.49999999994,
+        "cash_type_inr": 359548.87499999994,
+        "in_kind_inr": 44438.625,
+        "net_cash_inr": 345166.9199999999,
+        "upsell_net_cash_inr": 29066.688,
+        "collected_inr": 325396.122156
+      },
+      {
+        "id": "inbound",
+        "name": "Inbound partner page / form",
+        "initiative": "I3",
+        "prospects": 28,
+        "conversations": 21.0,
+        "proposal_demand": 13.65,
+        "proposals": 13.65,
+        "signed": 7.507500000000001,
+        "committed_inr": 788287.5000000001,
+        "cash_type_inr": 701575.8750000001,
+        "in_kind_inr": 86711.625,
+        "net_cash_inr": 673512.8400000001,
+        "upsell_net_cash_inr": 51315.264,
+        "collected_inr": 630238.0364280001
+      },
+      {
+        "id": "alumni_referral",
+        "name": "Alumni & sponsor referral engine",
+        "initiative": "I4",
+        "prospects": 45,
+        "conversations": 33.75,
+        "proposal_demand": 21.9375,
+        "proposals": 21.9375,
+        "signed": 12.065625,
+        "committed_inr": 1387546.875,
+        "cash_type_inr": 1234916.71875,
+        "in_kind_inr": 152630.15625,
+        "net_cash_inr": 1185520.05,
+        "upsell_net_cash_inr": 82470.96,
+        "collected_inr": 1102518.183195
+      },
+      {
+        "id": "creator_referral",
+        "name": "Creator & community referral network",
+        "initiative": "I5",
+        "prospects": 35,
+        "conversations": 26.25,
+        "proposal_demand": 17.0625,
+        "proposals": 17.0625,
+        "signed": 9.384375,
+        "committed_inr": 891515.625,
+        "cash_type_inr": 793448.90625,
+        "in_kind_inr": 98066.71875,
+        "net_cash_inr": 761710.95,
+        "upsell_net_cash_inr": 64144.079999999994,
+        "collected_inr": 718080.948585
+      },
+      {
+        "id": "cold_outbound",
+        "name": "Cold outbound (email / LinkedIn / revival)",
+        "initiative": "DEPRIORITISE",
+        "prospects": 40,
+        "conversations": 8.0,
+        "proposal_demand": 4.8,
+        "proposals": 4.8,
+        "signed": 0.384,
+        "committed_inr": 34560.0,
+        "cash_type_inr": 30758.4,
+        "in_kind_inr": 3801.5999999999985,
+        "net_cash_inr": 29528.064,
+        "upsell_net_cash_inr": 2624.7168,
+        "collected_inr": 27956.842905600002
+      },
+      {
+        "id": "anchor_tier",
+        "name": "Anchor / title-tier prospects (stretch only)",
+        "initiative": "I2",
+        "prospects": 0,
+        "conversations": 0.0,
+        "proposal_demand": 0.0,
+        "proposals": 0.0,
+        "signed": 0.0,
+        "committed_inr": 0.0,
+        "cash_type_inr": 0.0,
+        "in_kind_inr": 0.0,
+        "net_cash_inr": 0.0,
+        "upsell_net_cash_inr": 0.0,
+        "collected_inr": 0.0
+      }
+    ],
+    "waterfall": [
+      {
+        "step": "BAU",
+        "label": "Repeat 2025 playbook (BAU)",
+        "collected_inr": 940102.36488,
+        "signed": 16.400400000000005,
+        "increment_inr": 940102.36488
+      },
+      {
+        "step": "PLAN",
+        "label": "Cut cold volume to ABM test + plan capacity",
+        "collected_inr": 922533.1668,
+        "signed": 16.074,
+        "increment_inr": -17569.198080000002
+      },
+      {
+        "step": "I2",
+        "label": "I2 Renewal, Tiering & Upsell",
+        "collected_inr": 1616656.4416800002,
+        "signed": 23.292,
+        "increment_inr": 694123.2748800002
+      },
+      {
+        "step": "I3",
+        "label": "I3 Qualified-Lead Recovery + Inbound Page",
+        "collected_inr": 2032233.8248800002,
+        "signed": 29.481375,
+        "increment_inr": 415577.38320000004
+      },
+      {
+        "step": "I4",
+        "label": "I4 Alumni & Sponsor Referral Engine",
+        "collected_inr": 2781276.31908,
+        "signed": 39.402,
+        "increment_inr": 749042.4941999996
+      },
+      {
+        "step": "I5",
+        "label": "I5 Creator & Community Referrals",
+        "collected_inr": 3060784.1476799995,
+        "signed": 43.692,
+        "increment_inr": 279507.82859999966
+      },
+      {
+        "step": "I1",
+        "label": "I1 Cash Collection Desk",
+        "collected_inr": 3801931.1662968,
+        "signed": 43.692,
+        "increment_inr": 741147.0186168007
+      }
+    ]
+  },
+  "stretch": {
+    "totals": {
+      "capacity_proposals": 120,
+      "proposal_demand": 119.0,
+      "proposals": 119.0,
+      "capacity_binding": false,
+      "prospects": 231.0,
+      "conversations": 164.0,
+      "signed": 66.54799999999999,
+      "committed_inr": 8121160.0,
+      "cash_type_inr": 7309044.0,
+      "in_kind_inr": 812116.0,
+      "withdrawal_loss_inr": 219271.32000000007,
+      "net_cash_inr": 7089772.68,
+      "upsell_net_cash_inr": 871446.0599999999,
+      "collection_rate": 0.9255,
+      "collected_inr": 7368107.943870001,
+      "uncollected_by_festival_inr": 593110.7961299988
+    },
+    "monte_carlo": {
+      "p10": 5677725.0,
+      "p50": 7220125.0,
+      "p90": 8895150.0,
+      "mean": 7262017.7,
+      "signed_p10": 53.0,
+      "signed_p90": 77.0,
+      "p_reach_expected": 0.4552,
+      "p_reach_base_target": 0.9991,
+      "p_reach_2025_cash_type": 1.0
+    },
+    "bau_collected_inr": 940102.36488,
+    "by_source": [
+      {
+        "id": "renewal",
+        "name": "2025 sponsor renewals",
+        "initiative": "I2",
+        "prospects": 24,
+        "conversations": 22.799999999999997,
+        "proposal_demand": 20.52,
+        "proposals": 20.52,
+        "signed": 12.312,
+        "committed_inr": 1662120.0,
+        "cash_type_inr": 1495908.0,
+        "in_kind_inr": 166212.0,
+        "net_cash_inr": 1451030.76,
+        "upsell_net_cash_inr": 161225.63999999998,
+        "collected_inr": 1492143.2981999998
+      },
+      {
+        "id": "qualified_recovery",
+        "name": "Qualified-but-unpitched 2025 brands",
+        "initiative": "I3",
+        "prospects": 18,
+        "conversations": 14.4,
+        "proposal_demand": 11.520000000000001,
+        "proposals": 11.520000000000001,
+        "signed": 5.760000000000001,
+        "committed_inr": 576000.0000000001,
+        "cash_type_inr": 518400.0000000001,
+        "in_kind_inr": 57600.0,
+        "net_cash_inr": 502848.0000000001,
+        "upsell_net_cash_inr": 75427.20000000001,
+        "collected_inr": 535193.6976000002
+      },
+      {
+        "id": "inbound",
+        "name": "Inbound partner page / form",
+        "initiative": "I3",
+        "prospects": 36,
+        "conversations": 28.8,
+        "proposal_demand": 20.16,
+        "proposals": 20.16,
+        "signed": 12.096,
+        "committed_inr": 1391040.0,
+        "cash_type_inr": 1251936.0,
+        "in_kind_inr": 139104.0,
+        "net_cash_inr": 1214377.92,
+        "upsell_net_cash_inr": 158397.12,
+        "collected_inr": 1270503.2995200001
+      },
+      {
+        "id": "alumni_referral",
+        "name": "Alumni & sponsor referral engine",
+        "initiative": "I4",
+        "prospects": 60,
+        "conversations": 48.0,
+        "proposal_demand": 33.599999999999994,
+        "proposals": 33.599999999999994,
+        "signed": 20.159999999999997,
+        "committed_inr": 2519999.9999999995,
+        "cash_type_inr": 2267999.9999999995,
+        "in_kind_inr": 252000.0,
+        "net_cash_inr": 2199959.9999999995,
+        "upsell_net_cash_inr": 263995.19999999995,
+        "collected_inr": 2280390.5375999995
+      },
+      {
+        "id": "creator_referral",
+        "name": "Creator & community referral network",
+        "initiative": "I5",
+        "prospects": 45,
+        "conversations": 36.0,
+        "proposal_demand": 25.2,
+        "proposals": 25.2,
+        "signed": 15.12,
+        "committed_inr": 1512000.0,
+        "cash_type_inr": 1360800.0,
+        "in_kind_inr": 151200.0,
+        "net_cash_inr": 1319976.0,
+        "upsell_net_cash_inr": 197996.4,
+        "collected_inr": 1404883.4562
+      },
+      {
+        "id": "cold_outbound",
+        "name": "Cold outbound (email / LinkedIn / revival)",
+        "initiative": "DEPRIORITISE",
+        "prospects": 40,
+        "conversations": 10.0,
+        "proposal_demand": 6.0,
+        "proposals": 6.0,
+        "signed": 0.6000000000000001,
+        "committed_inr": 60000.00000000001,
+        "cash_type_inr": 54000.00000000001,
+        "in_kind_inr": 6000.0,
+        "net_cash_inr": 52380.00000000001,
+        "upsell_net_cash_inr": 7857.000000000002,
+        "collected_inr": 55749.3435
+      },
+      {
+        "id": "anchor_tier",
+        "name": "Anchor / title-tier prospects (stretch only)",
+        "initiative": "I2",
+        "prospects": 8,
+        "conversations": 4.0,
+        "proposal_demand": 2.0,
+        "proposals": 2.0,
+        "signed": 0.5,
+        "committed_inr": 400000.0,
+        "cash_type_inr": 360000.0,
+        "in_kind_inr": 40000.0,
+        "net_cash_inr": 349200.0,
+        "upsell_net_cash_inr": 6547.5,
+        "collected_inr": 329244.31124999997
+      }
+    ],
+    "waterfall": [
+      {
+        "step": "BAU",
+        "label": "Repeat 2025 playbook (BAU)",
+        "collected_inr": 940102.36488,
+        "signed": 16.400400000000005,
+        "increment_inr": 940102.36488
+      },
+      {
+        "step": "PLAN",
+        "label": "Cut cold volume to ABM test + plan capacity",
+        "collected_inr": 958162.7868750002,
+        "signed": 16.290000000000003,
+        "increment_inr": 18060.421995000215
+      },
+      {
+        "step": "I2",
+        "label": "I2 Renewal, Tiering & Upsell",
+        "collected_inr": 2282691.4818749996,
+        "signed": 26.222,
+        "increment_inr": 1324528.6949999994
+      },
+      {
+        "step": "I3",
+        "label": "I3 Qualified-Lead Recovery + Inbound Page",
+        "collected_inr": 3263130.0095625003,
+        "signed": 38.507375,
+        "increment_inr": 980438.5276875007
+      },
+      {
+        "step": "I4",
+        "label": "I4 Alumni & Sponsor Referral Engine",
+        "collected_inr": 4837155.5570625,
+        "signed": 56.522375,
+        "increment_inr": 1574025.5474999999
+      },
+      {
+        "step": "I5",
+        "label": "I5 Creator & Community Referrals",
+        "collected_inr": 5572853.118,
+        "signed": 66.54799999999999,
+        "increment_inr": 735697.5609374996
+      },
+      {
+        "step": "I1",
+        "label": "I1 Cash Collection Desk",
+        "collected_inr": 7368107.943870001,
+        "signed": 66.54799999999999,
+        "increment_inr": 1795254.8258700008
+      }
+    ]
+  },
+  "budget_inr": 215000,
+  "initiatives": [
+    {
+      "id": "I1",
+      "rank": 1,
+      "name": "Cash Collection Desk",
+      "controls": [
+        "global.collection"
+      ],
+      "budget_inr": 15000,
+      "people": "1 finance lead (50%) + SponsorOS",
+      "person_weeks": 8,
+      "confidence": 0.8,
+      "weeks_to_first_cash": 1,
+      "timeline": "W1-W16 (live from first signature)",
+      "concept": "Milestone billing (50% advance in 48h, balance T-7), invoice-on-signature, overdue escalation ladder, receipt verification.",
+      "experiment": "W1-W4: invoice every signed deal within 48h; compare days-to-first-payment against 7-day goal.",
+      "kpis": [
+        "% signed cash invoiced <=48h",
+        "days signature->first receipt",
+        "% due cash received on time",
+        "overdue INR"
+      ],
+      "scale": ">=80% of due cash received on time by W6",
+      "change": "60-80% on time: switch to 100% advance for late signers, CFO-level escalation",
+      "stop": "Never stop; if <60% on time, reassign closers to collections for 1 week"
+    },
+    {
+      "id": "I2",
+      "rank": 2,
+      "name": "Renewal, Tiering & Upsell Sprint",
+      "controls": [
+        "sources.renewal",
+        "sources.anchor_tier",
+        "global.upsell"
+      ],
+      "budget_inr": 60000,
+      "people": "2 closers (60%) for W1-W6",
+      "person_weeks": 7,
+      "confidence": 0.65,
+      "weeks_to_first_cash": 3,
+      "timeline": "W1-W6 renewals; add-ons W4-W14",
+      "concept": "Proof-of-performance recap to all 24 2025 sponsors with a 3-tier rate card (Associate / Category / Activation) and an add-on menu.",
+      "experiment": "First 8 renewal pitches: A/B the tier anchor (lead with Category vs Associate tier).",
+      "kpis": [
+        "renewal meetings / sponsors pitched",
+        "renewal win rate",
+        "avg signed cash deal",
+        "add-on attach rate"
+      ],
+      "scale": ">=50% of first 8 pitches convert to proposal within 2 weeks",
+      "change": "25-50%: shorten deck, lead with 2025 proof, offer early-renewal discount <=10%",
+      "stop": "<25% after 12 pitches: stop tier upsell, renew at 2025 price"
+    },
+    {
+      "id": "I3",
+      "rank": 3,
+      "name": "Qualified-Lead Recovery + Inbound Partner Page",
+      "controls": [
+        "sources.qualified_recovery",
+        "sources.inbound"
+      ],
+      "budget_inr": 40000,
+      "people": "1 closer (50%) + 1 designer (1 week)",
+      "person_weeks": 6,
+      "confidence": 0.6,
+      "weeks_to_first_cash": 3,
+      "timeline": "W1-W4 recovery blitz; page live W2, runs to W14",
+      "concept": "Pitch the 18 qualified-but-never-pitched brands within 10 days; publish a partner page with rate card and 2025 proof to lift inbound volume.",
+      "experiment": "Proposal to all 18 within 10 days; track proposal->meeting conversion and inbound submissions per week.",
+      "kpis": [
+        "proposals sent / 18",
+        "inbound submissions per week",
+        "inbound -> meeting rate"
+      ],
+      "scale": ">=6 of 18 recovery proposals in negotiation by W4; >=2 inbound/week",
+      "change": "3-5 in negotiation: re-qualify decision maker; refresh page CTA",
+      "stop": "<3 by W4: return brands to nurture; <1 inbound/week by W6: stop page spend"
+    },
+    {
+      "id": "I4",
+      "rank": 4,
+      "name": "Alumni & Sponsor Referral Engine",
+      "controls": [
+        "sources.alumni_referral"
+      ],
+      "budget_inr": 70000,
+      "people": "1 alumni lead + 2 closers (40%)",
+      "person_weeks": 14,
+      "confidence": 0.55,
+      "weeks_to_first_cash": 5,
+      "timeline": "W2-W14",
+      "concept": "Map alumni in marketing/partnership roles plus every renewed sponsor; ask each for 2 warm intros using a referral kit; recognise referrers (VIP passes, stage credit).",
+      "experiment": "Pilot with first 30 alumni asks: measure intros per ask and intro->meeting rate.",
+      "kpis": [
+        "intros received / alumni asks",
+        "intro -> meeting rate",
+        "meeting -> proposal rate",
+        "referral-sourced cash signed"
+      ],
+      "scale": ">=0.4 intros per ask and >=70% intro->meeting by W5",
+      "change": "0.2-0.4 intros/ask: tighten targeting to alumni in brand-marketing roles; add sponsor-to-sponsor referrals",
+      "stop": "<0.2 intros per ask after 60 asks: redeploy alumni lead to renewals"
+    },
+    {
+      "id": "I5",
+      "rank": 5,
+      "name": "Creator & Community Referral Network",
+      "controls": [
+        "sources.creator_referral"
+      ],
+      "budget_inr": 30000,
+      "variable_cost": "8% finder fee on cash RECEIVED (paid only after receipt)",
+      "people": "1 community lead (50%)",
+      "person_weeks": 8,
+      "confidence": 0.5,
+      "weeks_to_first_cash": 6,
+      "timeline": "W3-W14",
+      "concept": "Recruit campus creators and community partners who already work with youth brands; pay a finder fee only on collected cash.",
+      "experiment": "Onboard 10 creators by W4; measure qualified brand referrals per creator.",
+      "kpis": [
+        "active creators",
+        "brand referrals per creator",
+        "referral -> meeting rate",
+        "finder fees vs cash collected"
+      ],
+      "scale": ">=1.5 qualified referrals per creator by W6",
+      "change": "0.75-1.5: narrow to creators with brand-deal history",
+      "stop": "<0.75 per creator by W6 or finder fees >12% of attributed cash"
+    }
+  ]
+}
