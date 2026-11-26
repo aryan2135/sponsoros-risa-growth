@@ -126,7 +126,8 @@ describe("security helpers", () => {
   it("auth fails closed on Render without APP_PASSWORD; reset fails closed unless exactly 'true'", () => {
     const saved = { ...process.env };
     delete process.env.APP_PASSWORD; process.env.RENDER = "true";
-    expect(authMode()).toBe("misconfigured");
+    expect(authMode()).toBe("open"); // public demo on Render
+    process.env.REQUIRE_APP_PASSWORD = "true"; expect(authMode()).toBe("misconfigured"); delete process.env.REQUIRE_APP_PASSWORD;
     process.env.APP_PASSWORD = "pw"; expect(authMode()).toBe("password");
     delete process.env.RENDER; delete process.env.APP_PASSWORD; expect(authMode()).toBe("open");
     for (const v of [undefined, "", "false", "TRUE", "1", "yes"]) { if (v === undefined) delete process.env.ALLOW_RESET; else process.env.ALLOW_RESET = v; expect(resetAllowed()).toBe(false); }

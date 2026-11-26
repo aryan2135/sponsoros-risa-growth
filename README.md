@@ -227,7 +227,7 @@ Every module reads and writes the same database:
 
 - No credentials are in the repo or the frontend. The Anthropic key is server-side only, and `DATABASE_URL` is server-side only.
 - Every write is zod-validated with FK checks and transactions, and audited with before/after values.
-- **Access gate:** `APP_PASSWORD` protects every page and API except `GET /api/health`, `/login` and `POST /api/login`. Sessions use an HMAC-signed, **HttpOnly, SameSite=Lax, Secure** cookie (12 h); rotating the password invalidates all sessions. **This is a shared-password demo gate, not multi-user authentication:** there are no individual accounts or roles. On Render, a missing `APP_PASSWORD` **fails closed** (503).
+- **Access gate:** `APP_PASSWORD` protects every page and API except `GET /api/health`, `/login` and `POST /api/login`. Sessions use an HMAC-signed, **HttpOnly, SameSite=Lax, Secure** cookie (12 h); rotating the password invalidates all sessions. **This is a shared-password demo gate, not multi-user authentication:** there are no individual accounts or roles. The deployed demo is **public by default** (no `APP_PASSWORD` set); setting it enables the gate, and `REQUIRE_APP_PASSWORD=true` makes a missing password fail closed.
 - **Reset fails closed:** `/api/admin/reset` works only when `ALLOW_RESET` is exactly `"true"` (the Render Blueprint sets `"false"`).
 - **Health:** `GET /api/health` runs `SELECT 1` and returns only `{"status":"ok"}` or 503 `{"status":"unavailable"}`. Operational details (DB kind, SSL, AI provider) are at the authenticated `/api/meta`.
 - **Abuse controls:** per-client rate limits on login (10/15 min, plus a 100/15 min global cap), chat (20/min) and writes (120/min), keyed on the proxy-appended client address; chat input caps; security headers (`X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`).
@@ -255,7 +255,7 @@ npm run dev            # http://localhost:3000 — creates .data/pglite and impo
 | `AI_PROVIDER` | `gemini` / `anthropic` / `local` pins the provider (Render: `gemini`) | auto |
 | `DATABASE_URL` | Supabase Postgres: the **IPv4 pooler** URI (port 6543), with the password URL-encoded | unset → embedded PGlite |
 | `PGLITE_DIR` | PGlite data directory | `app/.data/pglite` |
-| `APP_PASSWORD` | shared demo access gate (required on Render) | unset → open locally; 503 on Render |
+| `APP_PASSWORD` | optional shared access gate | unset → public (deployed demo is public) |
 | `ALLOW_RESET` | reset endpoint enabled **only** when exactly `true` | disabled |
 | `DATABASE_SSL` | `require` / `disable` | `require` for non-localhost hosts |
 | `ALLOW_PGLITE_IN_PRODUCTION` | allow the embedded DB under `next start` (local demo only) | refused |
@@ -304,7 +304,7 @@ The latest report is [FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md), from the pre-
 **App on Render (Blueprint in [render.yaml](render.yaml)):**
 1. Push this repo to GitHub.
 2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml`: a web service in Singapore (the nearest region to the Tokyo database), root `app/`, build `npm ci --include=dev && npm run build`, start `npm run start`, health check `/api/health`.
-3. When prompted, enter the secrets `DATABASE_URL` (pooler URI, e.g. `postgresql://postgres.<ref>:<url-encoded-password>@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres`), `GEMINI_API_KEY` and `APP_PASSWORD`. The Blueprint sets `AI_PROVIDER=gemini` and `ALLOW_RESET=false`.
+3. When prompted, enter the secrets `DATABASE_URL` (pooler URI, e.g. `postgresql://postgres.<ref>:<url-encoded-password>@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres`), and `GEMINI_API_KEY`. The app is public (no password). The Blueprint sets `AI_PROVIDER=gemini` and `ALLOW_RESET=false`.
 4. Deploy, then open `/api/health` (expect `{"status":"ok"}`) and run the smoke test (`npm run smoke`, see §22). Expect 24/24, including `db_ssl=true` and a live Gemini answer.
 
 Render's free plan sleeps after inactivity, so the first request after a sleep can take about a minute. Never put the connection string in a `NEXT_PUBLIC_*` variable: those are shipped to the browser. `app/vercel.json` (pinned to `hnd1`) is also included if you prefer Vercel; the same environment variables apply.

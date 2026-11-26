@@ -19,7 +19,8 @@ export function safeEqual(a: string, b: string) {
 /** Password required? Yes if set; and fail closed on Render (or when REQUIRE_APP_PASSWORD=true) if it is missing. */
 export function authMode(): "open" | "password" | "misconfigured" {
   if (process.env.APP_PASSWORD) return "password";
-  if (process.env.RENDER || process.env.REQUIRE_APP_PASSWORD === "true") return "misconfigured";
+  // Public demo by default: no password => open. Opt back into fail-closed with REQUIRE_APP_PASSWORD=true.
+  if (process.env.REQUIRE_APP_PASSWORD === "true") return "misconfigured";
   return "open";
 }
 export const resetAllowed = () => process.env.ALLOW_RESET === "true";
