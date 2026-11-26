@@ -22,8 +22,8 @@ const THRESHOLDS: Array<[string, string, string, string, "higher_better" | "lowe
   ["initiative", "I4", "campaign.SC02.meeting_rate", "Warm intros: brands met / brands touched", "higher_better", 0.7, 0.4, 5, "ratio"],
   ["initiative", "I5", "campaign.SC05.meeting_rate", "Creator referrals: brands met / brands touched", "higher_better", 0.7, 0.4, 5, "ratio"],
   ["initiative", "I5", "campaign.SC05.win_rate", "Creator referrals: closed-won rate", "higher_better", 0.5, 0.25, 3, "ratio"],
-  ["campaign_rule", "*", "confirmed_per_brand", "Confirmed partnerships per brand touched", "higher_better", 0.2, 0.02, 20, "ratio"],
-  ["campaign_rule", "*", "opt_out_rate", "Opt-outs per brand touched", "lower_better", 0.01, 0.05, 20, "ratio"],
+  ["campaign_rule", "*", "confirmed_per_brand", "Confirmed partnerships per brand touched", "higher_better", 0.2, 0.02, 8, "ratio"],
+  ["campaign_rule", "*", "opt_out_rate", "Opt-outs per brand touched", "lower_better", 0.01, 0.05, 8, "ratio"],
 ];
 
 const INITIATIVE_OWNERS: Record<string, string> = { I1: "T02", I2: "T01", I3: "T02", I4: "T01", I5: "T05" };

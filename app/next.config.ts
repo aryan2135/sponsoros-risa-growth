@@ -1,7 +1,8 @@
 import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
-  /* config options here */
+  serverExternalPackages: ["@electric-sql/pglite"],
+  outputFileTracingIncludes: { "/api/**": ["./data/**"] },
 };
 
 export default nextConfig;

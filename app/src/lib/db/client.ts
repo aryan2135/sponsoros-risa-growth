@@ -15,6 +15,7 @@ g.__sponsoros ??= {};
 
 async function makePglite(dir: string): Promise<Db> {
   const { PGlite } = await import("@electric-sql/pglite");
+  if (!dir.startsWith("memory://")) (await import("node:fs")).mkdirSync(dir, { recursive: true });
   const pg = new PGlite(dir);
   await pg.waitReady;
   const wrap = (exec: { query: typeof pg.query }): Db => ({
