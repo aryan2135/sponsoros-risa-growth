@@ -31,7 +31,16 @@ async function makePglite(dir: string): Promise<Db> {
 
 async function makePostgres(url: string): Promise<Db> {
   const postgres = (await import("postgres")).default;
-  const sql = postgres(url, { max: 5, prepare: false, idle_timeout: 20 });
+  // Callers pass JSON for json/jsonb params as already-serialised strings (PGlite convention).
+  // postgres.js would JSON.stringify them again -> override so strings pass through unchanged.
+  const ser = (x: unknown) => (typeof x === "string" ? x : JSON.stringify(x));
+  const sql = postgres(url, {
+    max: 5, prepare: false, idle_timeout: 20,
+    types: {
+      json: { to: 114, from: [114], serialize: ser, parse: (x: string) => JSON.parse(x) },
+      jsonb: { to: 3802, from: [3802], serialize: ser, parse: (x: string) => JSON.parse(x) },
+    },
+  });
   const wrap = (exec: typeof sql): Db => ({
     kind: "postgres",
     async query<T>(text: string, params: unknown[] = []) {

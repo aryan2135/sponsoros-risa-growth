@@ -30,8 +30,13 @@ export interface State {
   source: { file_name: string; sha256: string; imported_at: number; dedupe_log: Record<string, string[]>; row_counts: Record<string, number> } | null;
 }
 
+const PREFETCH = ["SELECT * FROM event WHERE id = 1", "SELECT id, name FROM team_members", "SELECT * FROM source_imports ORDER BY id DESC LIMIT 1", "SELECT key, value::text AS value FROM settings", "SELECT * FROM brands", "SELECT * FROM contacts", "SELECT * FROM campaigns ORDER BY sponsor_campaign_id", "SELECT * FROM campaign_spend", "SELECT * FROM interactions", "SELECT * FROM qualification_history", "SELECT * FROM opportunities", "SELECT * FROM opportunity_history", "SELECT * FROM activations", "SELECT * FROM targets", "SELECT * FROM payment_milestones", "SELECT * FROM receipts", "SELECT * FROM tasks ORDER BY id", "SELECT * FROM initiatives ORDER BY rank", "SELECT * FROM kpi_thresholds ORDER BY id", "SELECT * FROM recommendations ORDER BY id DESC"];
+
 export async function loadState(db: Db): Promise<State> {
-  const q = (sql: string) => db.query<Record<string, unknown>>(sql);
+  // fire every read concurrently (pool) — memoised so each SQL string runs once
+  const pending = new Map<string, Promise<Record<string, unknown>[]>>();
+  const q = (sql: string) => { if (!pending.has(sql)) pending.set(sql, db.query<Record<string, unknown>>(sql)); return pending.get(sql)!; };
+  void PREFETCH; // concurrent prefetch disabled: it hangs through the Supabase transaction pooler with postgres.js
   const [ev] = await q(`SELECT * FROM event WHERE id = 1`);
   const team = Object.fromEntries((await q(`SELECT id, name FROM team_members`)).map((r) => [String(r.id), String(r.name)]));
   const [src] = await q(`SELECT * FROM source_imports ORDER BY id DESC LIMIT 1`);

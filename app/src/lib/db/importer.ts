@@ -59,89 +59,47 @@ export async function importSourceIfNeeded(db: Db, seed: Seed = loadSeed()) {
     log[sheet] = d.retries;
   }
 
+  // Bulk inserts: one statement per table via jsonb_to_recordset (fast over high-latency links, e.g. Supabase pooler)
+  const bulk = async (t: Db, table: string, cols: [string, string][], rows: Rec[], extra = "") => {
+    if (!rows.length) return;
+    const names = cols.map(([c]) => c).join(", ");
+    await t.query(`INSERT INTO ${table}(${names}${extra ? ", " + extra.split("=")[0] : ""}) SELECT ${names}${extra ? ", " + extra.split("=")[1] : ""} FROM jsonb_to_recordset($1::jsonb) AS x(${cols.map(([c, ty]) => `${c} ${ty}`).join(", ")}) ON CONFLICT DO NOTHING`, [JSON.stringify(rows)]);
+  };
+  const pick = (rows: Rec[], map: Record<string, string>) => rows.map((r) => Object.fromEntries(Object.entries(map).map(([to, from]) => [to, r[from] ?? null])));
+
   await db.tx(async (t) => {
     const [{ id: importId }] = await t.query<{ id: number }>(
       `INSERT INTO source_imports(file_name, sha256, row_counts, dedupe_log) VALUES ($1,$2,$3,$4) RETURNING id`,
       [seed.file_name, seed.sha256, JSON.stringify(counts), JSON.stringify(log)],
     );
-    for (const [sheet, rows] of Object.entries(clean)) {
-      for (const r of rows) {
-        await t.query(`INSERT INTO raw_records(sheet, source_id, import_id, payload) VALUES ($1,$2,$3,$4) ON CONFLICT DO NOTHING`, [
-          sheet, String(r[SHEET_KEYS[sheet]]), importId, JSON.stringify(r),
-        ]);
-      }
-    }
+    const raw: Rec[] = [];
+    for (const [sheet, rows] of Object.entries(clean)) for (const r of rows) raw.push({ sheet, source_id: String(r[SHEET_KEYS[sheet]]), payload: r });
+    await bulk(t, "raw_records", [["sheet", "text"], ["source_id", "text"], ["payload", "jsonb"]], raw, `import_id=${Number(importId)}`);
     const ev = clean.Event[0];
     await t.query(
       `INSERT INTO event(id, event_name, history_start, history_end, event_starts_at, event_ends_at, timezone, currency)
        VALUES (1,$1,$2,$3,$4,$5,$6,$7) ON CONFLICT (id) DO NOTHING`,
       [ev.event_name, ev.history_start, ev.history_end, ev.event_starts_at, ev.event_ends_at, ev.timezone, ev.currency],
     );
-    // team members from every sheet that carries owner_id + owner_name
     const team = new Map<string, string>();
     for (const sheet of ["Brands", "Sponsor campaigns", "Opportunity history"])
       for (const r of clean[sheet]) if (r.owner_id && r.owner_name) team.set(String(r.owner_id), String(r.owner_name));
-    for (const [id, name] of team) await t.query(`INSERT INTO team_members(id, name) VALUES ($1,$2) ON CONFLICT DO NOTHING`, [id, name]);
-    // interactions carry owner_id without a name (e.g. T04?) - add placeholder only if referenced and unknown
-    for (const r of clean["Sponsor interactions"]) {
-      const id = r.owner_id ? String(r.owner_id) : null;
-      if (id && !team.has(id)) {
-        team.set(id, `Team member ${id}`);
-        await t.query(`INSERT INTO team_members(id, name) VALUES ($1,$2) ON CONFLICT DO NOTHING`, [id, `Team member ${id}`]);
-      }
-    }
-
-    for (const r of clean.Brands)
-      await t.query(
-        `INSERT INTO brands(brand_id, brand_name, industry, owner_id, created_at, origin) VALUES ($1,$2,$3,$4,$5,'source') ON CONFLICT DO NOTHING`,
-        [r.brand_id, r.brand_name, r.industry, r.owner_id, r.created_at],
-      );
-    for (const r of clean["Sponsor contacts"])
-      await t.query(
-        `INSERT INTO contacts(contact_id, brand_id, contact_name, job_title, created_at, origin) VALUES ($1,$2,$3,$4,$5,'source') ON CONFLICT DO NOTHING`,
-        [r.contact_id, r.brand_id, r.contact_name, r.job_title, r.created_at],
-      );
-    for (const r of clean["Sponsor campaigns"])
-      await t.query(
-        `INSERT INTO campaigns(sponsor_campaign_id, campaign_name, channel, objective, audience, owner_id, planned_start_at, planned_end_at, created_at, origin)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,'source') ON CONFLICT DO NOTHING`,
-        [r.sponsor_campaign_id, r.campaign_name, r.channel, r.objective, r.audience, r.owner_id, r.planned_start_at, r.planned_end_at, r.created_at],
-      );
-    for (const r of clean["Sponsor interactions"])
-      await t.query(
-        `INSERT INTO interactions(interaction_id, attempt_id, origin_interaction_id, brand_id, contact_id, campaign_id, owner_id, channel, event_type, outcome, summary, occurred_at, origin)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,$8,$9,$10,$11,$12,'source') ON CONFLICT DO NOTHING`,
-        [r.interaction_id, r.attempt_id, r.origin_interaction_id, r.brand_id, r.contact_id, r.sponsor_campaign_id, r.owner_id, r.channel, r.event_type, r.outcome, r.summary, r.occurred_at],
-      );
-    for (const r of clean["Brand qualification"])
-      await t.query(
-        `INSERT INTO qualification_history(history_id, brand_id, status, reason, campaign_id, effective_at, origin) VALUES ($1,$2,$3,$4,$5,$6,'source') ON CONFLICT DO NOTHING`,
-        [r.history_id, r.brand_id, r.qualification_status, r.reason, r.sponsor_campaign_id, r.effective_at],
-      );
-    for (const r of clean["Partner opportunities"])
-      await t.query(
-        `INSERT INTO opportunities(opportunity_id, opportunity_name, brand_id, primary_contact_id, campaign_id, support_type, created_at, origin)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,'source') ON CONFLICT DO NOTHING`,
-        [r.opportunity_id, r.opportunity_name, r.brand_id, r.primary_contact_id, r.sponsor_campaign_id, r.support_type, r.created_at],
-      );
-    for (const r of clean["Opportunity history"])
-      await t.query(
-        `INSERT INTO opportunity_history(history_id, opportunity_id, stage, proposed_value_inr, confirmed_value_inr, owner_id, effective_at, origin)
-         VALUES ($1,$2,$3,$4,$5,$6,$7,'source') ON CONFLICT DO NOTHING`,
-        [r.history_id, r.opportunity_id, r.stage, r.proposed_value_inr, r.confirmed_value_inr ?? 0, r.owner_id, r.effective_at],
-      );
-    for (const r of clean["Sponsor activations"])
-      await t.query(
-        `INSERT INTO activations(activation_id, opportunity_id, brand_id, attendee_campaign_id, attendee_campaign_name, activation_note, linked_at)
-         VALUES ($1,$2,$3,$4,$5,$6,$7) ON CONFLICT DO NOTHING`,
-        [r.activation_id, r.opportunity_id, r.brand_id, r.attendee_campaign_id, r.attendee_campaign_name, r.activation_note, r.linked_at],
-      );
-    for (const r of clean.Targets)
-      await t.query(
-        `INSERT INTO targets(effective_at, target_version, qualified_brands_goal, confirmed_partnerships_goal, basis, origin)
-         VALUES ($1,$2,$3,$4,'[SOURCE] Targets sheet','source') ON CONFLICT DO NOTHING`,
-        [r.effective_at, r.target_version, r.qualified_brands_goal, r.confirmed_partnerships_goal],
-      );
+    for (const r of clean["Sponsor interactions"]) if (r.owner_id && !team.has(String(r.owner_id))) team.set(String(r.owner_id), `Team member ${r.owner_id}`);
+    await bulk(t, "team_members", [["id", "text"], ["name", "text"]], [...team].map(([id, name]) => ({ id, name })));
+    const T = "timestamptz";
+    await bulk(t, "brands", [["brand_id", "text"], ["brand_name", "text"], ["industry", "text"], ["owner_id", "text"], ["created_at", T]], clean.Brands, "origin='source'");
+    await bulk(t, "contacts", [["contact_id", "text"], ["brand_id", "text"], ["contact_name", "text"], ["job_title", "text"], ["created_at", T]], clean["Sponsor contacts"], "origin='source'");
+    await bulk(t, "campaigns", [["sponsor_campaign_id", "text"], ["campaign_name", "text"], ["channel", "text"], ["objective", "text"], ["audience", "text"], ["owner_id", "text"], ["planned_start_at", T], ["planned_end_at", T], ["created_at", T]], clean["Sponsor campaigns"], "origin='source'");
+    await bulk(t, "interactions", [["interaction_id", "text"], ["attempt_id", "text"], ["origin_interaction_id", "text"], ["brand_id", "text"], ["contact_id", "text"], ["campaign_id", "text"], ["owner_id", "text"], ["channel", "text"], ["event_type", "text"], ["outcome", "text"], ["summary", "text"], ["occurred_at", T]],
+      pick(clean["Sponsor interactions"], { interaction_id: "interaction_id", attempt_id: "attempt_id", origin_interaction_id: "origin_interaction_id", brand_id: "brand_id", contact_id: "contact_id", campaign_id: "sponsor_campaign_id", owner_id: "owner_id", channel: "channel", event_type: "event_type", outcome: "outcome", summary: "summary", occurred_at: "occurred_at" }), "origin='source'");
+    await bulk(t, "qualification_history", [["history_id", "text"], ["brand_id", "text"], ["status", "text"], ["reason", "text"], ["campaign_id", "text"], ["effective_at", T]],
+      pick(clean["Brand qualification"], { history_id: "history_id", brand_id: "brand_id", status: "qualification_status", reason: "reason", campaign_id: "sponsor_campaign_id", effective_at: "effective_at" }), "origin='source'");
+    await bulk(t, "opportunities", [["opportunity_id", "text"], ["opportunity_name", "text"], ["brand_id", "text"], ["primary_contact_id", "text"], ["campaign_id", "text"], ["support_type", "text"], ["created_at", T]],
+      pick(clean["Partner opportunities"], { opportunity_id: "opportunity_id", opportunity_name: "opportunity_name", brand_id: "brand_id", primary_contact_id: "primary_contact_id", campaign_id: "sponsor_campaign_id", support_type: "support_type", created_at: "created_at" }), "origin='source'");
+    await bulk(t, "opportunity_history", [["history_id", "text"], ["opportunity_id", "text"], ["stage", "text"], ["proposed_value_inr", "integer"], ["confirmed_value_inr", "integer"], ["owner_id", "text"], ["effective_at", T]],
+      clean["Opportunity history"].map((r) => ({ ...r, confirmed_value_inr: r.confirmed_value_inr ?? 0 })), "origin='source'");
+    await bulk(t, "activations", [["activation_id", "text"], ["opportunity_id", "text"], ["brand_id", "text"], ["attendee_campaign_id", "text"], ["attendee_campaign_name", "text"], ["activation_note", "text"], ["linked_at", T]], clean["Sponsor activations"]);
+    await bulk(t, "targets", [["effective_at", T], ["target_version", "text"], ["qualified_brands_goal", "integer"], ["confirmed_partnerships_goal", "integer"]], clean.Targets, "basis, origin='[SOURCE] Targets sheet', 'source'");
   });
   return { imported: true, retries: log };
 }
