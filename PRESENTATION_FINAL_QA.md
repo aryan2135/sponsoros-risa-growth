@@ -79,3 +79,12 @@
   - PPTX: `ppt/slides/_rels/slide3.xml.rels` contains external hyperlink relationship `Target="https://sponsoros-risa-growth.onrender.com"` and `ppt/slides/slide3.xml` contains `<a:hlinkClick>` on `"Explore SponsorOS — Live Demo ↗"`.
   - PDF: Verified `/URI (https://sponsoros-risa-growth.onrender.com)` link annotation present in `deliverables/RISA_Growth_Strategy.pdf`.
   - Live URL check: `https://sponsoros-risa-growth.onrender.com` returned HTTP `200` serving the deployed `SponsorOS — Sponsorship Revenue-to-Cash OS` web application (`/` and `/api/health` verified).
+
+---
+
+## 4. Cross-Document Synchronisation Audit
+
+- **Deliverables aligned:** `README.md`, `PRODUCT_LINK.txt`, `deliverables/RISA_Growth_Strategy.pptx`, `deliverables/RISA_Growth_Strategy.pdf`, `deliverables/build/make_deck.js`, `outputs/model/forecast_summary.json`, `FINANCIAL_MODEL_REVIEW.md`, `docs/DATA_LINEAGE.md`, `docs/KNOWN_LIMITATIONS.md`, `docs/EXECUTION_STATUS.md`, `ASSIGNMENT_REQUIREMENT_MATRIX.md`, `analysis/sync_docs.py`, and post-deployment status callouts in `PRE_DEPLOYMENT_AUDIT.md`, `SECURITY_AUDIT.md`, and `FINAL_TEST_REPORT.md`.
+- **Reconciled model figures:** BAU `₹9.3L`, Base gross `₹35.0L`, Base net `₹31.9L`, Stretch `₹70.4L`, Downside `₹19.5L`, Base P10–P90 `₹25.7L–₹44.8L` (assumption-driven simulated range), five initiatives `+₹26.2L`, cold outreach cut `−₹0.5L`, net uplift `+₹25.7L`, all-in cost `₹3.08L`.
+- **Canonical presentation links:** `deliverables/RISA_Growth_Strategy.pdf` and `deliverables/RISA_Growth_Strategy.pptx` referenced consistently throughout.
+- **Public demo, credential rotation & test separation:** Documented that credential rotation was completed prior to deployment, SponsorOS runs publicly without `APP_PASSWORD` (`ALLOW_RESET=false`, no individual accounts/roles), and pre-deployment automated/local/live-Gemini checks are strictly separated from post-deployment `/` + `/api/health` checks.

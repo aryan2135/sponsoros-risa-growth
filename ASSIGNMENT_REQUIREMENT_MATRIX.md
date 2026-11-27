@@ -37,8 +37,8 @@ Status key: **✅ Fully implemented and tested** · **🟡 Implemented, not inde
 | Sponsor CRM | Brands, contacts, qualification versions, interaction logging | ✅ | e2e CRM create brand + contact |
 | Opportunity pipeline | Filters, priority queue, deal drawer, stage/value/owner versions | ✅ | e2e stage change |
 | Cash receipt ledger | Payment milestones (policy or manual), invoicing, verified/unverified/test receipts, overdue | ✅ | 6 cash-ledger integration tests; e2e receipts |
-| Persistent changes / reliable updates | PostgreSQL (Supabase in production; SSL; no silent PGlite fallback in production) | ✅ locally against TLS Postgres · 🟡 **on Supabase after the password rotation** | Postgres integration suite (7 tests); process-restart persistence check; earlier Supabase verification used the now-compromised password and must be re-run after rotation |
-| Accessible working product (link or demo) | Render Blueprint, smoke-test script, hardened deployment | 🟠 **Not yet deployed.** Needs the owner's Render login and rotated secrets | `render.yaml`, `app/scripts/smoke.mjs` |
+| Persistent changes / reliable updates | PostgreSQL (Supabase Tokyo in production; SSL `require`; no silent PGlite fallback in production) | ✅ locally against TLS Postgres · 🟢 **Live on Supabase after rotation** (`/api/health` `SELECT 1` HTTP `200`) | Pre-deployment Postgres integration suite (`7` tests) + restart check; owner completed credential rotation prior to deploy; live `/api/health` verified `{"status":"ok"}` |
+| Accessible working product (link or demo) | Live public demo at https://sponsoros-risa-growth.onrender.com (`APP_PASSWORD` unset, `ALLOW_RESET=false`, `AI_PROVIDER=gemini`) | ✅ **Live public demo** | `GET /` and `GET /api/health` verified HTTP `200`; `render.yaml`, `PRODUCT_LINK.txt` |
 
 ## Part 2.5: Embedded AI analyst
 | Requirement | Implementation | Status | Evidence |
@@ -65,7 +65,7 @@ Status key: **✅ Fully implemented and tested** · **🟡 Implemented, not inde
 | Research, assumptions, calculations, data sources, prioritisation, setup, tools, limitations | ✅ | `README.md` (regenerated from model outputs), `docs/*`, this audit set |
 
 ## Honest gaps
-1. **No live URL yet:** blocked on the owner's Render login, plus rotated Supabase and Gemini credentials.
-2. **Supabase persistence after rotation is not yet re-verified.** The production code path is verified against a TLS PostgreSQL server; re-run `npm run smoke -- --write --ai --expect-db postgres --expect-ai gemini` against the Render URL.
-3. **The Anthropic adapter was never called live** (no key). It isn't used in this deployment.
-4. **The deterministic fallback is template-based.** It only appears when Gemini is unavailable, and it says so.
+1. **Post-deployment full write/AI smoke re-run:** Credentials were rotated and SponsorOS is live at https://sponsoros-risa-growth.onrender.com (`/` and `/api/health` verified HTTP `200` `{"status":"ok"}`). The full `npm run smoke -- --write --ai --expect-db postgres --expect-ai gemini` script passed `24/24` pre-deployment against local TLS Postgres + Gemini (`FINAL_TEST_REPORT.md`) and has not yet been re-executed against the live Render URL.
+2. **The Anthropic adapter was never called live** (no key). It isn't used in this deployment.
+3. **The deterministic fallback is template-based.** It only appears when Gemini is unavailable, and it says so.
+4. **Public demo mode:** `APP_PASSWORD` is intentionally unset on the live demo (no login required, no individual accounts or roles); `ALLOW_RESET=false` keeps reset disabled.

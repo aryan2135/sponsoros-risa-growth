@@ -1,5 +1,7 @@
 # Pre-deployment audit: SponsorOS (RISA Labs Challenge B)
 
+> **Post-deployment update:** The owner has completed credential rotation (Supabase database password, Supabase API keys, and Google Gemini API key) and deployed SponsorOS publicly to Render at **https://sponsoros-risa-growth.onrender.com** with `APP_PASSWORD` unset (public demo, no individual accounts/roles) and `ALLOW_RESET=false`. `GET /` and `GET /api/health` (`{"status":"ok"}`) return HTTP `200`. The historical pre-deployment audit notes below are retained for provenance.
+
 **Verdict:** the code is ready to deploy safely. The submission is **not yet complete**: there is no live URL, and the exposed credentials must be rotated first. Nothing was deployed and no secret was pushed during this audit.
 
 | Document | Purpose |

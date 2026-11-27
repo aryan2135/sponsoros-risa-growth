@@ -1,5 +1,7 @@
 # Security audit (pre-deployment)
 
+> **Post-deployment update:** Prior to deployment, the owner completed rotation of the credentials noted in §1 & §6 item 7, and deployed SponsorOS as a public demo at **https://sponsoros-risa-growth.onrender.com** (`APP_PASSWORD` unset, `ALLOW_RESET=false`, no individual accounts or roles; see §5b). The pre-deployment audit findings below are retained for provenance.
+
 Scope: the repository, its full git history, the working tree (including ignored files), generated logs, screenshots and docs, and the application's authentication, authorisation, database and AI surfaces.
 Scanned with **Gitleaks 8.30.1** (official release binary, run from outside the repo) plus targeted searches for the specific credentials known to have been shared.
 No secret values appear in this report or in any log.

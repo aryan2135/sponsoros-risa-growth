@@ -7,12 +7,13 @@
 | Deliverable | Where |
 |---|---|
 | 3-slide strategy (submission-ready PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf), [deliverables/RISA_Growth_Strategy.pptx](deliverables/RISA_Growth_Strategy.pptx) |
+| Presentation QA & reconciliation report | [PRESENTATION_FINAL_QA.md](PRESENTATION_FINAL_QA.md) |
 | Live SponsorOS demo | https://sponsoros-risa-growth.onrender.com · GitHub: https://github.com/aryan2135/sponsoros-risa-growth · [PRODUCT_LINK.txt](PRODUCT_LINK.txt) |
-| Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · Supabase Postgres + Google Gemini · deploy with [render.yaml](render.yaml), see [Deployment](#24-deployment) |
+| Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · Supabase Postgres + Google Gemini · deploy with [render.yaml](render.yaml), see [Deployment](#24-deployment--credential-rotation) |
 | Historical audit (Gate 1) | [outputs/audit/](outputs/audit/): workbook, PDF/DOCX report, CSVs |
 | Financial model | [model/assumptions.json](model/assumptions.json), [analysis/financial_model.py](analysis/financial_model.py), [outputs/model/](outputs/model/) |
 | External research | [docs/research/EXTERNAL_EVIDENCE.md](docs/research/EXTERNAL_EVIDENCE.md) |
-| Tests | [docs/TEST_REPORT.md](docs/TEST_REPORT.md) |
+| Tests | [FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md) (pre-deployment audit; supersedes [docs/TEST_REPORT.md](docs/TEST_REPORT.md)) |
 | Screenshots | [docs/screenshots/](docs/screenshots/) |
 
 Labels used throughout: **[SOURCE]** dataset fact · **[CALCULATED]** transparent derivation · **[EXTERNAL]** cited evidence · **[ASSUMPTION]** planning assumption · **[SIMULATION]** model output · **[UNKNOWN]** not established by data.
@@ -23,8 +24,8 @@ Labels used throughout: **[SOURCE]** dataset fact · **[CALCULATED]** transparen
 
 - **The 2025 data shows commitments, not cash.** At the pre-festival cutoff (11 Apr 2025 23:59 IST) there were 24 confirmed partnerships: **₹20,00,000 cash-type + ₹2,40,000 in-kind** [CALCULATED]. The dataset has **no receipts, invoices or payment dates**, so **cash actually collected is UNKNOWN**. There is also no campaign spend, so CAC and ROI cannot be calculated.
 - **Warm channels won and cold channels did not.** All 24 confirmations came from Warm Introductions, Creator Referrals and the Partner Interest Form: 44 brands touched, 24 confirmed. The cold channels touched 148 brands and confirmed **zero** at the cutoff (their one confirmation later withdrew) [CALCULATED; observational, not causal]. The whole ₹14.4L open pipeline is cold-originated, and 25 of its 26 deals are stale (median 43 days in stage).
-- **Target for the next edition (Bengaluru): ₹35.0L verified cash before the festival (base), stretch ₹70.4L, downside ₹19.5L** [SIMULATION]. Base P10–P90 is ₹25.7L–₹44.8L (Monte Carlo). Repeating the 2025 playbook at the same risk-adjusted rates would collect ₹9.3L. Net of every plan cost (₹3.08L: budget, closer stipends, finder fees), base is ₹31.9L. Model v1.1.0: the pre-deployment review lowered the base from ₹38.0L ([docs/FINANCIAL_MODEL_REVIEW.md](FINANCIAL_MODEL_REVIEW.md)).
-- **Five ranked bets** add ₹25.7L over BAU for ₹3.08L all-in (₹2.15L budget): (1) Cash Collection Desk, (2) Renewal, tiering & upsell, (3) Qualified-lead recovery + inbound page, (4) Alumni & sponsor referral engine, (5) Creator & community referrals. **Cold outreach is cut** to a 40-brand ABM test.
+- **Target for the next edition (Bengaluru): ₹35.0L in forecast gross cash receipts before the festival (base), stretch ₹70.4L, downside ₹19.5L** [SIMULATION]. Base P10–P90 is ₹25.7L–₹44.8L (assumption-driven Monte Carlo range, 10,000 runs; not an empirically calibrated confidence interval). Repeating the 2025 playbook (BAU) at the same risk-adjusted rates would collect ₹9.3L. Net of all plan acquisition costs (₹3.08L: ₹2.15L initiative budgets + ₹40K closer stipend + ₹53K creator finder fees), base net cash is **₹31.9L**. Historical 2025 cash receipts remain **UNKNOWN** (no receipt records in source). Model v1.1.0: the pre-deployment review lowered the base from ₹38.0L ([FINANCIAL_MODEL_REVIEW.md](FINANCIAL_MODEL_REVIEW.md)).
+- **Five ranked initiatives** add **+₹26.2L** over BAU before the **−₹0.5L** cold-outreach reduction, yielding **+₹25.7L net uplift** over BAU for **₹3.08L** all-in cost (₹2.15L budget): (1) Cash Collection Desk (+₹5.9L), (2) Renewal, tiering & upsell (+₹6.5L), (3) Qualified-lead recovery + inbound page (+₹4.0L), (4) Alumni & sponsor referral engine (+₹7.1L), (5) Creator & community referrals (+₹2.7L). **Cold outreach is cut** to a 40-brand ABM test.
 - **SponsorOS turns this into an operating loop:** detect (thresholds + readiness engine) → diagnose (grounded AI analyst) → decide (human confirms) → do (tasks, payment milestones) → measure (verified receipts only).
 
 ## 2. Problem statement
@@ -53,7 +54,7 @@ SponsorOS is a revenue-to-cash operating system, not a CRM with charts. Three ca
 ## 5. Sponsor ICP
 
 - **Segments (hypotheses):** youth F&B and beverages, D2C personal care and grooming, fintech/UPI, mobility, edtech/media. In 2025 the industries were evenly split (35–37 brands each), and confirmed cash by industry is in `outputs/audit/industry_breakdown.csv`.
-- **Selection criteria:** 18–24 audience fit · a warm path exists (alumni, an existing sponsor, a creator, or inbound) · ₹0.5–2L budget band (2025 cash deals: ₹50K–₹2L, median ₹95K) · a Bengaluru decision maker is reachable · will accept a 50% advance.
+- **Selection criteria:** 18–24 audience fit · a warm path exists (alumni, an existing sponsor, a creator, or inbound) · ₹0.5–2L budget band (2025 cash deals: ₹50K–₹2L, median ₹95K) · a Bengaluru decision maker is reachable · ability to approve milestone-based payment terms.
 - **Exclude:** opted-out brands (7 in 2025), and cold lists with no meeting held.
 
 ## 6. Historical dataset inventory
@@ -106,12 +107,12 @@ Model engine: [analysis/financial_model.py](analysis/financial_model.py) (Python
 
 ```
 committed value
- × cash share (0.893 = 2,000,000 / 2,240,000; renewals 0.83 = 20 of 24 were cash) → cash-type value (in-kind removed)
+ × cash share (0.893 = ₹20.0L/₹22.4L cash share of confirmed value; renewals 0.83 = 20/24 cash-type mix) → cash-type value (in-kind removed)
  × (1 − withdrawal 4% = 1/25 confirmations withdrawn)                             → net cash-type
  + add-on upsell (attach rate × add-on value)
- × collection rate before T-0                                                     → CASH COLLECTED PRE-FESTIVAL (gross: the objective)
- − initiative budget − closer stipends − 8% creator finder fees                   → net contribution (reported alongside)
-collection rate (with Cash Desk) = Σ signing-phase share × P(paid by T-0 | phase)
+ × collection rate before T-0 [ASSUMPTION]                                        → FORECAST GROSS CASH PRE-FESTIVAL (objective)
+ − initiative budget − closer stipends − 8% creator finder fees                   → net cash after costs (reported alongside)
+collection rate (with Cash Desk) = Σ signing-phase share × P(paid by T-0 | phase) [forward-looking ASSUMPTION — 2025 has no receipt records]
    base: 0.25×0.95 + 0.55×0.88 + 0.2×0.6 = 0.842
    (2025 confirmations were 8% early / 72% mid / 20% late with a T-11.7w start, which gives 0.81)
    stretch 0.925; without the desk 0.70 [ASSUMPTION]
@@ -120,19 +121,19 @@ collection rate (with Cash Desk) = Σ signing-phase share × P(paid by T-0 | pha
 | | BAU (2025 playbook) | **Base** | **Stretch** | Downside |
 |---|---:|---:|---:|---:|
 | Prospects | 234 | 185 | 224 | 164 |
-| Proposals (capacity) | 45 (80) | 83 (100) | 115 (120) | 73 (100) |
+| Proposals (capacity) | 45 (80) | 82.6 (100) | 115.1 (120) | 72.6 (100) |
 | Expected signed deals | 16.4 | 42.2 | 64.2 | 29.4 |
 | Committed value | | ₹46.1L | ₹78.5L | ₹29.0L |
 | Cash-type (in-kind removed) | | ₹40.3L | ₹69.8L | ₹25.3L |
 | Withdrawal loss | | −₹1.6L | −₹2.1L | −₹1.0L |
 | Upsell (net) | | +₹2.8L | +₹8.3L | +₹2.0L |
-| Collection rate | 70% | 84.2% | 92.5% | 74.2% |
-| **Cash collected before festival (gross)** | **₹9.3L** | **₹35.0L** | **₹70.4L** | **₹19.5L** |
+| Assumed collection rate | 70% | 84.2% | 92.5% | 74.2% |
+| **Forecast gross cash before festival** | **₹9.3L** | **₹35.0L** | **₹70.4L** | **₹19.5L** |
 | Plan costs (budget + stipends + finder fees) | | ₹3.08L | ₹4.02L | ₹2.82L |
-| Net after costs | | ₹31.9L | ₹66.4L | ₹16.6L |
-| Monte Carlo P10–P90 | | ₹25.7L–₹44.8L | ₹54.3L–₹86.1L | ₹13.0L–₹26.5L |
+| **Net forecast cash after costs** | | **₹31.9L** | **₹66.4L** | **₹16.6L** |
+| Monte Carlo P10–P90 (assumption-driven) | | ₹25.7L–₹44.8L | ₹54.3L–₹86.1L | ₹13.0L–₹26.5L |
 
-The downside case runs the base plan with win rates ×0.8, collection −10pp, deal size −10% and new warm volume −20%, all at once. The Monte Carlo band depends on the assumed rate uncertainty: base P10–P90 is ₹24.0L–₹46.1L at k=10 (wider), and ₹26.5L–₹44.1L at k=40.
+The downside case runs the base plan with win rates ×0.8, collection −10pp, deal size −10% and new warm volume −20%, all at once. The Monte Carlo P10–P90 band is an assumption-driven simulated range (using assumed Beta concentration k = 20), **not** an empirically calibrated confidence interval: base P10–P90 is ₹24.0L–₹46.1L at k=10 (wider), and ₹26.5L–₹44.1L at k=40.
 
 **Calibration and haircuts.** The 2025 warm brand→signed yield was 54.5% (24/44), with a 96% win rate on warm proposals. That looks synthetic, so the base plan uses **26.8%** and the stretch about **36%**. Cold channels get a non-zero win rate (5–10%) even though 2025 shows zero. The anchor/title tier (₹8L deals) is **excluded from base** and enters stretch only at expected value (8 prospects → 0.5 deals). Expected deals are fractional by design: they are expected values, not whole signed contracts.
 
@@ -167,14 +168,15 @@ The single source is [model/assumptions.json](model/assumptions.json); its `basi
 | 3 | **Qualified-lead recovery + inbound page**: pitch 18 qualified-never-pitched brands in 10 days; rate-card page | +₹4.0L (+₹9.5L) | ₹40K | closer 50% + designer · W1–W14 | proposals to all 18 by day 10 | ≥6 in negotiation by W4 / 3–5 re-qualify / <3 → nurture |
 | 4 | **Alumni & sponsor referral engine**: 2 warm intros per alumni marketer or renewed sponsor | +₹7.1L (+₹15.0L) | ₹70K | alumni lead + 2 closers 40% · W2–W14 | first 30 asks | ≥0.4 intros/ask & ≥70% → meeting / 0.2–0.4 retarget / <0.2 after 60 asks → stop |
 | 5 | **Creator & community referrals**: 8% finder fee paid only on received cash | +₹2.7L (+₹7.0L) | ₹30K + 8% | community lead 50% · W3–W14 | onboard 10 creators by W4 | ≥1.5 referrals/creator / 0.75–1.5 narrow / <0.75 or fees >12% → stop |
+| | **Five initiatives subtotal (I1–I5)** | **+₹26.2L** (+₹61.3L) | **₹2.15L** + 8% on I5 receipts | | | |
 | — | Cut cold volume to a 40-brand ABM test; plan capacity | −₹0.5L (−₹0.2L) | — | — | meeting-gated | — |
-| | **Total over BAU** | **+₹25.7L** (+₹61.1L) | **₹2.15L** + ₹40K stipend + ₹53K finder fees (base) | | | |
+| | **Net uplift over BAU** | **+₹25.7L** (+₹61.1L) | **₹3.08L** all-in (₹2.15L budget + ₹40K stipend + ₹53K finder fees base) | | | |
 
 **Deprioritised / rejected:** scaling cold email, LinkedIn and revival (148 brands → 0 confirmed, 7 opt-outs) · betting on one title sponsor (no 2025 deal exceeded ₹2L) · chasing the stale ₹14.4L cold pipeline (one close-or-disqualify touch, then archive) · paid ads for sponsor leads (no spend data; buyers are a few hundred marketers).
 
 ## 12. Prioritisation method
 
-**Score = incremental pre-festival cash (₹L) × confidence ÷ person-weeks**, with time-to-cash and dependencies applied as tie-breakers. Scores: I1 0.59 · I2 0.60 · I3 0.40 · I4 0.28 · I5 0.17. I1 and I2 are within 0.01 of each other, so I1 ranks first on the tie-breakers: cash from week 1 (vs week 3), and it multiplies every other bet's cash. Contributions come from an **ordered waterfall** (BAU → cut cold → I2 → I3 → I4 → I5 → I1). Each step switches only the parameters its initiative controls, so **the increments sum exactly to the plan with no double counting** (tested in Python and TypeScript). Collection is attributed last because it multiplies every deal. **Dependencies:** I4 uses renewed sponsors from I2 as referrers, and with 4 closers instead of 5 capacity binds.
+**Score = incremental pre-festival cash (₹L) × confidence ÷ person-weeks**, with time-to-cash and dependencies applied as tie-breakers. Scores: I1 0.59 · I2 0.60 · I3 0.40 · I4 0.28 · I5 0.17. I1 and I2 are within 0.01 of each other, so I1 ranks first on the tie-breakers: cash from week 1 (vs week 3), and it multiplies every other bet's cash. Contributions come from an **ordered waterfall** (BAU ₹9.3L → cut cold −₹0.5L → I2 +₹6.5L → I3 +₹4.0L → I4 +₹7.1L → I5 +₹2.7L → I1 +₹5.9L = ₹35.0L). The five initiatives add +₹26.2L and the cold-outreach reduction removes −₹0.5L, yielding +₹25.7L net uplift over BAU with no double counting (tested in Python and TypeScript). Collection is attributed last because it multiplies every deal. **Dependencies:** I4 uses renewed sponsors from I2 as referrers, and with 4 closers instead of 5 capacity binds.
 
 ## 13. Technical architecture
 
@@ -185,7 +187,7 @@ Next.js 15 (App Router, TypeScript, Tailwind v4, Recharts)
  ├─ lib/services.ts — every write: validated, transactional, audited (audit_events)
  ├─ lib/analytics/  — deterministic snapshot, readiness engine, threshold evaluator
  ├─ lib/model/      — forecast engine (parity with Python)
- ├─ lib/ai/         — tool layer (12 read tools + propose_task), Anthropic tool loop, deterministic analyst
+ ├─ lib/ai/         — tool layer (13 read tools + propose_task), Gemini/Anthropic tool loops, deterministic analyst
  └─ lib/db/         — Postgres via PGlite (embedded, file-persisted) or postgres.js when DATABASE_URL is set (Supabase)
 ```
 
@@ -214,7 +216,7 @@ Every module reads and writes the same database:
 - **Campaigns & Playbook:** status, budget, initiative links, spend entry (cost metrics appear only for recorded spend), editable thresholds with live scale/change/stop signals.
 - **Tasks & Decisions:** task lifecycle, outcomes, and a decision log linking recommendation to task to outcome.
 - **Scenario Simulator:** 12 levers, base/stretch, waterfall, Monte Carlo band, saved scenarios. It never modifies actual records.
-- **Data & Assumptions:** import provenance, gaps, settings, targets, readiness rules, model table, audit trail, reset to source.
+- **Data & Assumptions:** import provenance, gaps, settings, targets, readiness rules, model table, audit trail, reset to source (disabled on the public demo via `ALLOW_RESET=false`).
 
 ## 16. AI architecture
 
@@ -226,11 +228,11 @@ Every module reads and writes the same database:
 
 ## 17. Grounding and security
 
-- No credentials are in the repo or the frontend. The Anthropic key is server-side only, and `DATABASE_URL` is server-side only.
+- No credentials are in the repo or the frontend. `GEMINI_API_KEY`, `ANTHROPIC_API_KEY`, `APP_PASSWORD`, and `DATABASE_URL` are server-side only.
 - Every write is zod-validated with FK checks and transactions, and audited with before/after values.
-- **Access gate:** `APP_PASSWORD` protects every page and API except `GET /api/health`, `/login` and `POST /api/login`. Sessions use an HMAC-signed, **HttpOnly, SameSite=Lax, Secure** cookie (12 h); rotating the password invalidates all sessions. **This is a shared-password demo gate, not multi-user authentication:** there are no individual accounts or roles. The deployed demo is **public by default** (no `APP_PASSWORD` set); setting it enables the gate, and `REQUIRE_APP_PASSWORD=true` makes a missing password fail closed.
-- **Reset fails closed:** `/api/admin/reset` works only when `ALLOW_RESET` is exactly `"true"` (the Render Blueprint sets `"false"`).
-- **Health:** `GET /api/health` runs `SELECT 1` and returns only `{"status":"ok"}` or 503 `{"status":"unavailable"}`. Operational details (DB kind, SSL, AI provider) are at the authenticated `/api/meta`.
+- **Public demo access & optional password gate:** The live deployment at https://sponsoros-risa-growth.onrender.com runs as a **public demo without `APP_PASSWORD` set**, so reviewers can explore all pages and the rate-limited AI analyst without logging in. Password protection is optional: setting `APP_PASSWORD` gates every page and API except `GET /api/health`, `/login` and `POST /api/login` behind an HMAC-signed, **HttpOnly, SameSite=Lax, Secure** session cookie (12 h; rotating the password invalidates all sessions), and setting `REQUIRE_APP_PASSWORD=true` makes a missing password fail closed (`503`). **There are no individual user accounts, roles, or per-user audit identities.**
+- **Reset is disabled:** `/api/admin/reset` fails closed (`403`) unless `ALLOW_RESET` is `"true"`; [render.yaml](render.yaml) sets `ALLOW_RESET="false"`.
+- **Health:** `GET /api/health` runs `SELECT 1` and returns only `{"status":"ok"}` or 503 `{"status":"unavailable"}`. Operational details (DB kind, SSL, AI provider) are at `/api/meta` (behind `APP_PASSWORD` when configured).
 - **Abuse controls:** per-client rate limits on login (10/15 min, plus a 100/15 min global cap), chat (20/min) and writes (120/min), keyed on the proxy-appended client address; chat input caps; security headers (`X-Frame-Options: DENY`, `nosniff`, `Referrer-Policy`, `Permissions-Policy`).
 - **Database:** SSL required for remote Postgres; `prepare:false` for the pooler; the app refuses to run production on the ephemeral embedded DB.
 - **AI:** fixed read-only tools (no SQL); task creation needs explicit confirmation; every ₹ figure in an LLM answer is checked against tool output (grounding check).
@@ -256,8 +258,9 @@ npm run dev            # http://localhost:3000 — creates .data/pglite and impo
 | `AI_PROVIDER` | `gemini` / `anthropic` / `local` pins the provider (Render: `gemini`) | auto |
 | `DATABASE_URL` | Supabase Postgres: the **IPv4 pooler** URI (port 6543), with the password URL-encoded | unset → embedded PGlite |
 | `PGLITE_DIR` | PGlite data directory | `app/.data/pglite` |
-| `APP_PASSWORD` | optional shared access gate | unset → public (deployed demo is public) |
-| `ALLOW_RESET` | reset endpoint enabled **only** when exactly `true` | disabled |
+| `APP_PASSWORD` | optional shared access gate | unset → public demo (deployed app runs open without `APP_PASSWORD`) |
+| `REQUIRE_APP_PASSWORD` | set `"true"` to fail closed (`503`) if `APP_PASSWORD` is unset | unset |
+| `ALLOW_RESET` | reset endpoint enabled **only** when exactly `"true"` | disabled (`"false"` on Render) |
 | `DATABASE_SSL` | `require` / `disable` | `require` for non-localhost hosts |
 | `ALLOW_PGLITE_IN_PRODUCTION` | allow the embedded DB under `next start` (local demo only) | refused |
 
@@ -272,7 +275,7 @@ npm run dev            # http://localhost:3000 — creates .data/pglite and impo
 python analysis/export_seed.py   # workbook → app/data/source_seed.json (lossless, with SHA-256)
 ```
 
-The importer (`app/src/lib/db/importer.ts`) dedupes exact retries, aborts on conflicting payloads, preserves raw rows, and skips the import if that SHA-256 was already imported. Use **Data & Assumptions → Reset to source** to discard app-made changes.
+The importer (`app/src/lib/db/importer.ts`) dedupes exact retries, aborts on conflicting payloads, preserves raw rows, and skips the import if that SHA-256 was already imported. Use **Data & Assumptions → Reset to source** locally to discard app-made changes (disabled on the live public demo via `ALLOW_RESET=false`).
 
 ## 22. Testing instructions
 
@@ -284,31 +287,42 @@ cd app
 npx tsc --noEmit && npx eslint src tests scripts   # types + lint
 npx vitest run                           # unit + integration (in-memory Postgres)
 TEST_DATABASE_URL=postgresql://postgres:<pw>@localhost:<port>/postgres npx vitest run   # + real Postgres suite (localhost only; drops the schema!)
-BASE_URL=https://<app> APP_PASSWORD=<pw> npm run smoke -- --write --ai --expect-db postgres --expect-ai gemini   # deployed smoke test
+BASE_URL=https://sponsoros-risa-growth.onrender.com npm run smoke -- --write --ai --expect-db postgres --expect-ai gemini   # live smoke test (add APP_PASSWORD=<pw> if gate is enabled)
 npx playwright test                      # browser e2e (own server on :3200, fresh DB; uses installed Edge — PW_CHANNEL=chromium to switch)
 ```
 
-## 23. Actual test results
+## 23. Verification & test results
 
-The latest report is [FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md), from the pre-deployment audit (Vitest 66/66 including real PostgreSQL over TLS, Playwright 8/8, smoke 24/24, live Gemini workflow, auth/health/fail-closed checks). [docs/TEST_REPORT.md](docs/TEST_REPORT.md) is the earlier report. Summary of the earlier run:
+Test and verification results are separated strictly by environment so pre-deployment checks are never conflated with post-deployment verification. Full pre-deployment logs are in [FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md) (superseding the earlier [docs/TEST_REPORT.md](docs/TEST_REPORT.md)); presentation QA is in [PRESENTATION_FINAL_QA.md](PRESENTATION_FINAL_QA.md).
 
-- TypeScript compile and ESLint: **0 errors**.
-- Vitest: **37/37 passed** (now 66). This covers import and idempotency, Python↔TypeScript snapshot parity (21 metrics × 2 snapshots), model parity, waterfall reconciliation, CRUD → analytics, append-only history, cash-ledger rules, thresholds, and AI honesty, changed-data, follow-up, confirm-before-save and validation tests.
-- Audit workbook: **19/19** Excel formulas recalculated by the `formulas` engine match the Python audit.
-- Playwright e2e: **8/8 passed** on a fresh database. Covered: a UI stage change persists and updates the dashboard; the cash schedule and test-vs-verified receipts; AI insight → proposal → confirm → saved task; the task lifecycle; the simulator; the CRM.
-- PPTX: the deck passes the OOXML validator, and PowerPoint export was rendered and visually checked.
+### A. Local automated & static tests (pre-deployment)
+- **TypeScript & ESLint:** `tsc --noEmit` and `eslint src tests scripts` passed with **0 errors, 0 warnings** (`typecheck.log`, `lint.log`).
+- **Vitest unit + integration:** **59/59 passed** on embedded PGlite (7 real-Postgres tests skipped when `TEST_DATABASE_URL` is unset), and **66/66 passed** against a local TLS PostgreSQL 17 container (`vitest.log`). Covers import idempotency, Python↔TypeScript snapshot parity (21 metrics × 2 snapshots), financial model & waterfall parity, CRUD → analytics, append-only history, cash-ledger rules, thresholds, Gemini resilience, and AI honesty/grounding checks.
+- **Audit workbook & presentation:** **19/19** Excel formulas recalculated by `formulas` match Python (`outputs/audit/workbook_validation.json`). Final 3-slide PPTX & PowerPoint-exported PDF passed OOXML/page-count checks (`3` slides), visual PNG inspection, and clickable link verification (`PRESENTATION_FINAL_QA.md`).
 
-## 24. Deployment
+### B. Simulated browser end-to-end tests (local PGlite + deterministic analyst)
+- **Playwright (`npx playwright test`):** **8/8 passed** against an isolated local Next.js server (`:3200`) backed by a fresh PGlite database and the **deterministic** local analyst (`playwright.log`). Covered: dashboard metrics, all 9 UI modules, stage edit persistence, cash schedule & verified-vs-test receipts, AI proposal → user confirmation → saved task, task lifecycle, simulator isolation, and CRM brand creation.
 
-**Live deployment:** https://sponsoros-risa-growth.onrender.com (source: https://github.com/aryan2135/sponsoros-risa-growth). The exact deployment steps and credential-rotation notes are in [PRE_DEPLOYMENT_AUDIT.md](PRE_DEPLOYMENT_AUDIT.md). The Supabase project is in Tokyo (`ap-northeast-1`). Its direct `db.<ref>.supabase.co` host is IPv6-only, so use the IPv4 transaction pooler. The database was verified earlier with credentials that have since been treated as compromised and must be rotated. After rotation, the app re-creates the schema and seeds the data on first boot if the database is empty (idempotently).
+### C. Pre-deployment production-build & live Gemini verification (local container)
+- **Local `next build` + `next start` against TLS PostgreSQL 17 + Google Gemini free tier** ([FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md)):
+  - **Smoke suite:** **24/24** passed (`smoke-local-prod.log`), including `db_ssl: true`, `reset_enabled: false`, auth/fail-closed checks (`401`/`307`/`503`), and login rate limits.
+  - **Live Gemini workflow:** 7-question backend workflow passed with **13/13** `₹` figures grounded against tool output, `UNKNOWN` preserved on prompt-injection probes, and `propose_task` confirmation flow verified (`gemini-live.log`). The Anthropic adapter is implemented and typechecked but has not been called live (no key).
 
-**App on Render (Blueprint in [render.yaml](render.yaml)):**
-1. Push this repo to GitHub.
-2. In Render, choose **New → Blueprint** and select the repo. Render reads `render.yaml`: a web service in Singapore (the nearest region to the Tokyo database), root `app/`, build `npm ci --include=dev && npm run build`, start `npm run start`, health check `/api/health`.
-3. When prompted, enter the secrets `DATABASE_URL` (pooler URI, e.g. `postgresql://postgres.<ref>:<url-encoded-password>@aws-0-ap-northeast-1.pooler.supabase.com:6543/postgres`), and `GEMINI_API_KEY`. The app is public (no password). The Blueprint sets `AI_PROVIDER=gemini` and `ALLOW_RESET=false`.
-4. Deploy, then open `/api/health` (expect `{"status":"ok"}`) and run the smoke test (`npm run smoke`, see §22). Expect 24/24, including `db_ssl=true` and a live Gemini answer.
+### D. Post-deployment Render + Supabase verification (`https://sponsoros-risa-growth.onrender.com`)
+- **Verified live:** `GET https://sponsoros-risa-growth.onrender.com/` returns HTTP `200` serving the `SponsorOS — Sponsorship Revenue-to-Cash OS` application, and `GET https://sponsoros-risa-growth.onrender.com/api/health` returns HTTP `200` (`{"status":"ok"}`, backed by `SELECT 1` against the live Supabase Postgres database).
+- **Scope note:** The full write/AI smoke suite (`npm run smoke -- --write --ai --expect-db postgres --expect-ai gemini`) was passed pre-deployment on the local TLS PostgreSQL + live Gemini setup (`FINAL_TEST_REPORT.md`) and has **not** been re-executed against the live Render URL.
 
-Render's free plan sleeps after inactivity, so the first request after a sleep can take about a minute. Never put the connection string in a `NEXT_PUBLIC_*` variable: those are shipped to the browser. `app/vercel.json` (pinned to `hnd1`) is also included if you prefer Vercel; the same environment variables apply.
+## 24. Deployment & credential rotation
+
+**Status:** **Deployed live** at https://sponsoros-risa-growth.onrender.com (source: https://github.com/aryan2135/sponsoros-risa-growth), running as a Render Web Service in Singapore (`render.yaml`) connected to Supabase Postgres in Tokyo (`ap-northeast-1`, IPv4 transaction pooler port `6543`, `ssl: "require"`).
+
+**Credential rotation (completed):** Prior to deployment, the owner rotated the Supabase database password, Supabase API keys, and Google Gemini API key that had appeared in earlier development sessions, and entered the rotated `DATABASE_URL` and `GEMINI_API_KEY` directly in Render environment variables. No secrets or passwords are stored in this repository (`app/.env.local` is git-ignored, and Gitleaks full-history scans in `docs/audit_logs/gitleaks_history_pre.json` and `docs/audit_logs/gitleaks_history_post.json` report zero committed leaks). Historical pre-deployment checklists remain preserved for reference in [PRE_DEPLOYMENT_AUDIT.md](PRE_DEPLOYMENT_AUDIT.md) and [SECURITY_AUDIT.md](SECURITY_AUDIT.md).
+
+**Public demo configuration:**
+- `APP_PASSWORD` is intentionally unset in Render so reviewers can access the live demo publicly without login; password protection can be enabled at any time via `APP_PASSWORD` (and `REQUIRE_APP_PASSWORD=true`).
+- `ALLOW_RESET="false"` in [render.yaml](render.yaml) keeps database reset disabled (`403`).
+- `AI_PROVIDER=gemini` pins the server-side Gemini analyst.
+- Render's free plan sleeps after inactivity, so the first request after idle can take ~30–60 seconds. Never put connection strings or API keys in `NEXT_PUBLIC_*` variables. `app/vercel.json` (pinned to `hnd1`) is also included as an alternative target.
 
 **Performance:** the whole state is fetched in one SQL round trip (a JSON aggregate per table), so a dashboard request from India to Tokyo takes about 0.5 s with a warm connection.
 
@@ -317,11 +331,11 @@ Render's free plan sleeps after inactivity, so the first request after a sleep c
 The full list is in [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md). The main ones:
 
 - Historical cash, CAC and ROI are unknowable from the source; SponsorOS only measures them from data recorded in the app.
-- The forecast is an expected-value planning model calibrated on synthetic data with explicit haircuts. It is not validated against real collections.
+- The forecast is an expected-value planning model calibrated on synthetic data with explicit haircuts. It is not validated against real collections, and the Monte Carlo P10–P90 range is assumption-driven rather than empirically calibrated.
 - The readiness score is a heuristic.
 - Campaign attribution is observational.
 - The live analyst runs on Gemini's free tier. When every model in the chain is overloaded (HTTP 503/429), it falls back to the deterministic analyst and says so. The Anthropic adapter is implemented and typechecked, but no live call has been run because no key was available.
-- Single shared login; no per-user roles or RLS.
+- The live demo runs publicly without `APP_PASSWORD` (no individual user accounts, roles, or Supabase RLS); optional shared-password gating can be enabled via `APP_PASSWORD`.
 
 ## 26. Future improvements
 
@@ -334,9 +348,10 @@ The full list is in [docs/KNOWN_LIMITATIONS.md](docs/KNOWN_LIMITATIONS.md). The 
 
 ## Tools used
 
-- Claude Code (Opus 5.5): analysis, code, tests, documents.
-- Python with pandas, openpyxl, formulas, reportlab, python-docx, numpy.
-- Next.js 15.5.4, React 19, Tailwind 4, Recharts 2.15, zod 3, @electric-sql/pglite 0.3, postgres 3.4, @anthropic-ai/sdk 1.14, Vitest 3, Playwright 1.55.
-- pptxgenjs 3.12 for the deck, exported to PDF with Microsoft PowerPoint.
-- The web research was done by a Claude research subagent; its sources are in EXTERNAL_EVIDENCE.md.
+- **Claude Code:** initial dataset audit, financial modelling, SponsorOS application implementation, automated test suite, and initial documentation/deck build.
+- **Google Antigravity:** final presentation corrections and layout QA, PowerPoint/PDF export verification, live deployment health checks, and README/documentation synchronisation audit.
+- **Python** (`pandas`, `openpyxl`, `formulas`, `reportlab`, `python-docx`, `numpy`): historical audit scripts, Excel formula validation, financial model, Monte Carlo simulation, and Gate 1 report generation.
+- **Application & database stack:** Next.js 15.5.4, React 19, Tailwind CSS 4, Recharts 2.15, `zod` 3, `@electric-sql/pglite` 0.3, `postgres` 3.4 (Supabase PostgreSQL), Google Gemini REST API (`lib/ai/gemini.ts`), `@anthropic-ai/sdk` 1.14 (implemented/typechecked adapter), Vitest 3, Playwright 1.55, hosted on Render (`render.yaml`).
+- **Presentation & security tooling:** `pptxgenjs` 3.12 (`deliverables/build/make_deck.js`), Microsoft PowerPoint 16.0 (PDF and PNG slide export), Gitleaks 8.30.1 (secret history scanning).
+- **Web research:** sourced external evidence compiled in [docs/research/EXTERNAL_EVIDENCE.md](docs/research/EXTERNAL_EVIDENCE.md).
 - Nothing was reused from templates beyond the `create-next-app` scaffold.

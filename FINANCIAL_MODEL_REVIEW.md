@@ -12,7 +12,7 @@ Historical source figures were not changed. Historical cash receipts remain **UN
 | **Stretch** | ₹73.7L | **₹70.4L** | P10–P90 ₹54.3L–₹86.1L |
 | **Downside** (new) | — | **₹19.5L** | P10–P90 ₹13.0L–₹26.5L |
 | Base net of plan costs (new) | — | **₹31.9L** | after ₹3.08L of costs |
-| Incremental over BAU (base) | ₹28.6L | ₹25.7L | |
+| Incremental over BAU (base) | ₹28.6L | ₹25.7L | Five initiatives +₹26.2L, cold outreach reduction −₹0.5L |
 
 **Base bridge** ([docs/audit_logs/forecast_bridge_v100_to_v110.log](docs/audit_logs/forecast_bridge_v100_to_v110.log)): ₹38.02L → signing-phase timing −₹1.22L → renewal cash share −₹0.65L → pool de-duplication −₹1.19L → **₹34.96L**.
 

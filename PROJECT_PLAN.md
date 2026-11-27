@@ -1,6 +1,6 @@
 # Project Plan — RISA Growth APM, Challenge B (Sponsorship Cash)
 
-Owner: Aryan Dongre · Execution agent: Claude Code
+Owner: Aryan Dongre · Execution agent: Claude + Aryan Dongre
 
 | Stage | Deliverable | Gate |
 |---|---|---|

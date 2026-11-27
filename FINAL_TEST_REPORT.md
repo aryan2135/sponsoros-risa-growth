@@ -1,5 +1,7 @@
 # Final test report (pre-deployment)
 
+> **Post-deployment status note:** All tests in the table below were executed **pre-deployment** (2026-11-27) against local PGlite, a local TLS PostgreSQL 17 container, and the local Next.js production build. Subsequent post-deployment checks verified `GET https://sponsoros-risa-growth.onrender.com/` (HTTP `200`) and `GET https://sponsoros-risa-growth.onrender.com/api/health` (HTTP `200`, `{"status":"ok"}`); the full write/AI `npm run smoke` script has not been re-executed against the live Render URL.
+
 Run on 2026-11-27, Windows 11, Node 24.16, Python 3.13. Raw logs are in [docs/audit_logs/](docs/audit_logs/). The earlier report, [docs/TEST_REPORT.md](docs/TEST_REPORT.md), is kept for history; where they differ, this one supersedes it.
 
 **Test infrastructure:**

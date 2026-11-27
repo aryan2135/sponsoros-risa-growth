@@ -10,11 +10,11 @@
 ## Model
 - Expected-value planning model; fractional deals are expectations, not signed contracts.
 - Collection probabilities by signing phase, the renewal rates and the deal-size uplift are **assumptions**. With real receipt history they should be recalibrated.
-- The Monte Carlo uses an assumed Beta concentration (k = 20) for rate uncertainty.
+- The Monte Carlo uses an assumed Beta concentration (k = 20) for rate uncertainty; its P10–P90 range is an assumption-driven simulated range, not an empirically calibrated confidence interval.
 - The live in-app forecast uses an editable collection probability (0.84, aligned with model v1.1.0), a 0.75 discount on overdue amounts, and a time-to-festival step factor. All are labelled assumptions.
 
 ## Product
-- **Not deployed yet.** There is no public URL. It needs the owner's Render login and rotated Supabase and Gemini credentials (PRE_DEPLOYMENT_AUDIT.md).
+- **Public demo without login:** Deployed at https://sponsoros-risa-growth.onrender.com with `APP_PASSWORD` unset (public access; no individual accounts, roles, or per-user audit identities) and `ALLOW_RESET=false` (reset disabled). Password protection can be enabled via `APP_PASSWORD` (and `REQUIRE_APP_PASSWORD=true`).
 - The live LLM analyst runs on **Gemini's free tier**: capacity and quota vary, and when every model in the chain fails, the labelled deterministic analyst answers (templated language; unusual phrasing may get the general overview). The Anthropic adapter has never been called live (no key).
 - The LLM can still word things imperfectly. The grounding check flags any ₹ figure it can't trace to tool output, but it doesn't check non-currency claims.
 - Edits are stamped at the operating clock. A change dated before a record's latest version is refused, so you move the clock forward rather than rewrite history.
