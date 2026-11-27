@@ -6,7 +6,7 @@
 
 | Deliverable | Where |
 |---|---|
-| 3-slide strategy (final submission-ready PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy_Final.pdf](deliverables/RISA_Growth_Strategy_Final.pdf), [deliverables/RISA_Growth_Strategy_Final.pptx](deliverables/RISA_Growth_Strategy_Final.pptx) (initial draft: [RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf)) |
+| 3-slide strategy (submission-ready PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf), [deliverables/RISA_Growth_Strategy.pptx](deliverables/RISA_Growth_Strategy.pptx) |
 | Live SponsorOS demo | https://sponsoros-risa-growth.onrender.com · GitHub: https://github.com/aryan2135/sponsoros-risa-growth · [PRODUCT_LINK.txt](PRODUCT_LINK.txt) |
 | Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · Supabase Postgres + Google Gemini · deploy with [render.yaml](render.yaml), see [Deployment](#24-deployment) |
 | Historical audit (Gate 1) | [outputs/audit/](outputs/audit/): workbook, PDF/DOCX report, CSVs |

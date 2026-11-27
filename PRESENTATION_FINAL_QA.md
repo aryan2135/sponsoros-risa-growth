@@ -1,8 +1,8 @@
 # Presentation Final QA Report
 
 **Deliverables verified:**
-- `deliverables/RISA_Growth_Strategy_Final.pptx` (editable 3-slide PowerPoint, generated via `deliverables/build/make_deck_final.js`)
-- `deliverables/RISA_Growth_Strategy_Final.pdf` (exported directly via Microsoft PowerPoint 16.0)
+- `deliverables/RISA_Growth_Strategy.pptx` (editable 3-slide PowerPoint, generated via `deliverables/build/make_deck.js`)
+- `deliverables/RISA_Growth_Strategy.pdf` (exported directly via Microsoft PowerPoint 16.0)
 - `PRODUCT_LINK.txt` (live demo URL and GitHub repository URL; no credentials included)
 - `README.md` (updated deliverables table and deployment section with live demo URL and final deck links)
 
@@ -71,11 +71,11 @@
 
 ## 3. Structural, Visual & Hyperlink Verification
 
-- **Slide count:** Exactly **3 slides** verified in both `deliverables/RISA_Growth_Strategy_Final.pptx` (`slide1.xml`–`slide3.xml`) and `deliverables/RISA_Growth_Strategy_Final.pdf` (`/Type /Page` count = `3`).
+- **Slide count:** Exactly **3 slides** verified in both `deliverables/RISA_Growth_Strategy.pptx` (`slide1.xml`–`slide3.xml`) and `deliverables/RISA_Growth_Strategy.pdf` (`/Type /Page` count = `3`).
 - **Author attribution:** `"Aryan Dongre · IIT Kharagpur"` preserved on Slide 1 and footer attribution preserved across all 3 slides.
 - **Visual inspection:** Exported 1920×1080 PNG renders of all 3 slides from PowerPoint (`16.0`) and visually verified layout, alignment, chart labels, table headers, and zero text overlap/overflow.
 - **Editable PPTX:** All shapes, tables, text boxes, bar chart, and waterfall blocks remain native editable PowerPoint elements.
 - **Hyperlink verification:**
   - PPTX: `ppt/slides/_rels/slide3.xml.rels` contains external hyperlink relationship `Target="https://sponsoros-risa-growth.onrender.com"` and `ppt/slides/slide3.xml` contains `<a:hlinkClick>` on `"Explore SponsorOS — Live Demo ↗"`.
-  - PDF: Verified `/URI (https://sponsoros-risa-growth.onrender.com)` link annotation present in `deliverables/RISA_Growth_Strategy_Final.pdf`.
+  - PDF: Verified `/URI (https://sponsoros-risa-growth.onrender.com)` link annotation present in `deliverables/RISA_Growth_Strategy.pdf`.
   - Live URL check: `https://sponsoros-risa-growth.onrender.com` returned HTTP `200` serving the deployed `SponsorOS — Sponsorship Revenue-to-Cash OS` web application (`/` and `/api/health` verified).
