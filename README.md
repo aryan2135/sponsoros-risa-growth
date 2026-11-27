@@ -6,7 +6,8 @@
 
 | Deliverable | Where |
 |---|---|
-| 3-slide strategy (PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf), [deliverables/RISA_Growth_Strategy.pptx](deliverables/RISA_Growth_Strategy.pptx) |
+| 3-slide strategy (final submission-ready PDF + editable PPTX) | [deliverables/RISA_Growth_Strategy_Final.pdf](deliverables/RISA_Growth_Strategy_Final.pdf), [deliverables/RISA_Growth_Strategy_Final.pptx](deliverables/RISA_Growth_Strategy_Final.pptx) (initial draft: [RISA_Growth_Strategy.pdf](deliverables/RISA_Growth_Strategy.pdf)) |
+| Live SponsorOS demo | https://sponsoros-risa-growth.onrender.com · GitHub: https://github.com/aryan2135/sponsoros-risa-growth · [PRODUCT_LINK.txt](PRODUCT_LINK.txt) |
 | Working product (dashboard, CRM, pipeline, campaigns, cash ledger, tasks, simulator, AI analyst) | [app/](app/) · Supabase Postgres + Google Gemini · deploy with [render.yaml](render.yaml), see [Deployment](#24-deployment) |
 | Historical audit (Gate 1) | [outputs/audit/](outputs/audit/): workbook, PDF/DOCX report, CSVs |
 | Financial model | [model/assumptions.json](model/assumptions.json), [analysis/financial_model.py](analysis/financial_model.py), [outputs/model/](outputs/model/) |
@@ -299,7 +300,7 @@ The latest report is [FINAL_TEST_REPORT.md](FINAL_TEST_REPORT.md), from the pre-
 
 ## 24. Deployment
 
-**Status: not yet deployed.** The exact steps, including credential rotation, are in [PRE_DEPLOYMENT_AUDIT.md](PRE_DEPLOYMENT_AUDIT.md). The Supabase project is in Tokyo (`ap-northeast-1`). Its direct `db.<ref>.supabase.co` host is IPv6-only, so use the IPv4 transaction pooler. The database was verified earlier with credentials that have since been treated as compromised and must be rotated. After rotation, the app re-creates the schema and seeds the data on first boot if the database is empty (idempotently).
+**Live deployment:** https://sponsoros-risa-growth.onrender.com (source: https://github.com/aryan2135/sponsoros-risa-growth). The exact deployment steps and credential-rotation notes are in [PRE_DEPLOYMENT_AUDIT.md](PRE_DEPLOYMENT_AUDIT.md). The Supabase project is in Tokyo (`ap-northeast-1`). Its direct `db.<ref>.supabase.co` host is IPv6-only, so use the IPv4 transaction pooler. The database was verified earlier with credentials that have since been treated as compromised and must be rotated. After rotation, the app re-creates the schema and seeds the data on first boot if the database is empty (idempotently).
 
 **App on Render (Blueprint in [render.yaml](render.yaml)):**
 1. Push this repo to GitHub.
